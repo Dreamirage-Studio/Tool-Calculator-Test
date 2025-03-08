@@ -1,0 +1,789 @@
+<!DOCTYPE html> 
+<html lang="zh-CN"> 
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拟态化科学计算器</title>
+    <style> 
+        * {
+            margin: 0;
+            padding: 0; 
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        } 
+        
+        body { 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; 
+            background-color: #e6e7ee;
+        } 
+        
+        .calculator { 
+            width: 350px;
+            padding: 25px;
+            border-radius: 20px;
+            background-color: #e6e7ee;
+            box-shadow: 10px 10px 20px #c8c9d0,
+                        -10px -10px 20px #ffffff;
+        }
+        
+        .display { 
+            width: 100%; 
+            height: 80px;
+            margin-bottom: 20px; 
+            padding: 15px;
+            border-radius: 10px; 
+            background-color: #e6e7ee;
+            box-shadow: inset 5px 5px 10px #c8c9d0,
+                        inset -5px -5px 10px #ffffff; 
+            text-align: right;
+            overflow: hidden;
+        } 
+        
+        .history {
+            height: 20px;
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 5px;
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
+        
+        .current {
+            height: 40px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+         
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+         
+        .btn {
+            height: 50px;
+            border: none;
+            border-radius: 10px;
+            background-color: #e6e7ee; 
+            box-shadow: 5px 5px 10px #c8c9d0,
+                        -5px -5px 10px #ffffff;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer; 
+            transition: all 0.2s ease;
+        } 
+        
+        .btn:active {
+            box-shadow: inset 3px 3px 6px #c8c9d0, 
+                        inset -3px -3px 6px #ffffff; 
+        } 
+        
+        .btn-operator {
+            color: #4d7cfe;
+            font-weight: bold;
+        } 
+        
+        .btn-function {
+            color: #ff7043;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .btn-equal {
+            background-color: #4d7cfe;
+            color: white;
+            box-shadow: 5px 5px 10px #c8c9d0,
+                        -5px -5px 10px #ffffff; 
+        }
+         
+        .btn-equal:active {
+            background-color: #3a6ad4;
+            box-shadow: inset 3px 3px 6px #3158b3,
+                        inset -3px -3px 6px #4d7cfe; 
+        } 
+        
+        .btn-clear { 
+            color: #ff5252;
+            font-weight: bold;
+        }
+         
+        .mode-switch { 
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+         
+        .mode-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: #e6e7ee; 
+            box-shadow: 3px 3px 6px #c8c9d0, 
+                        -3px -3px 6px #ffffff;
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s ease; 
+        }
+         
+        .mode-btn.active  {
+            box-shadow: inset 2px 2px 5px #c8c9d0,
+                        inset -2px -2px 5px #ffffff;
+            color: #4d7cfe; 
+            font-weight: bold;
+        }
+    </style> 
+</head> 
+<body> 
+    <div class="calculator"> 
+        <div class="display"> 
+            <div class="history" id="history"></div>
+            <div class="current" id="current">0</div> 
+        </div>
+         
+        <div class="mode-switch"> 
+            <button class="mode-btn active" id="basic-mode">基础</button>
+            <button class="mode-btn" id="scientific-mode">科学</button> 
+            <button class="mode-btn" id="programmer-mode">程序员</button>
+        </div>
+         
+        <div class="buttons" id="basic-buttons"> 
+            <!-- 第一行 --> 
+            <button class="btn btn-function">MC</button> 
+            <button class="btn btn-function">MR</button> 
+            <button class="btn btn-function">M+</button> 
+            <button class="btn btn-function">M-</button> 
+            <button class="btn btn-clear">C</button>
+             
+            <!-- 第二行 --> 
+            <button class="btn btn-function">%</button> 
+            <button class="btn btn-function">√</button> 
+            <button class="btn btn-function">x²</button> 
+            <button class="btn btn-function">1/x</button>
+            <button class="btn btn-operator">÷</button> 
+             
+            <!-- 第三行 -->
+            <button class="btn">7</button> 
+            <button class="btn">8</button> 
+            <button class="btn">9</button> 
+            <button class="btn btn-operator">×</button> 
+            <button class="btn btn-function">DEL</button> 
+            
+            <!-- 第四行 --> 
+            <button class="btn">4</button> 
+            <button class="btn">5</button> 
+            <button class="btn">6</button> 
+            <button class="btn btn-operator">-</button>
+            <button class="btn btn-function">±</button> 
+            
+            <!-- 第五行 -->
+            <button class="btn">1</button>
+            <button class="btn">2</button>
+            <button class="btn">3</button>
+            <button class="btn btn-operator">+</button>
+            <button class="btn btn-equal" id="equal">=</button> 
+             
+            <!-- 第六行 -->
+            <button class="btn" style="grid-column: span 2;">0</button> 
+            <button class="btn">.</button> 
+            <button class="btn btn-function">Ans</button> 
+            <button class="btn btn-function">Rad</button> 
+        </div> 
+         
+        <div class="buttons" id="scientific-buttons" style="display: none;">
+            <!-- 科学计算器按钮 --> 
+            <!-- 第一行 -->
+            <button class="btn btn-function">sin</button> 
+            <button class="btn btn-function">cos</button>
+            <button class="btn btn-function">tan</button>
+            <button class="btn btn-function">log</button> 
+            <button class="btn btn-function">ln</button> 
+             
+            <!-- 第二行 --> 
+            <button class="btn btn-function">sin⁻¹</button>
+            <button class="btn btn-function">cos⁻¹</button>
+            <button class="btn btn-function">tan⁻¹</button>
+            <button class="btn btn-function">10ˣ</button> 
+            <button class="btn btn-function">eˣ</button>
+             
+            <!-- 第三行 -->
+            <button class="btn btn-function">π</button> 
+            <button class="btn btn-function">e</button>
+            <button class="btn btn-function">x^y</button> 
+            <button class="btn btn-function">x!</button>
+            <button class="btn btn-clear">C</button>
+             
+            <!-- 第四行 --> 
+            <button class="btn">7</button> 
+            <button class="btn">8</button> 
+            <button class="btn">9</button> 
+            <button class="btn btn-operator">÷</button> 
+            <button class="btn btn-function">DEL</button> 
+            
+            <!-- 第五行 --> 
+            <button class="btn">4</button> 
+            <button class="btn">5</button> 
+            <button class="btn">6</button> 
+            <button class="btn btn-operator">×</button> 
+            <button class="btn btn-function">(</button> 
+            
+            <!-- 第六行 -->
+            <button class="btn">1</button>
+            <button class="btn">2</button>
+            <button class="btn">3</button>
+            <button class="btn btn-operator">-</button> 
+            <button class="btn btn-function">)</button>
+             
+            <!-- 第七行 -->
+            <button class="btn">0</button>
+            <button class="btn">.</button> 
+            <button class="btn btn-function">Ans</button> 
+            <button class="btn btn-operator">+</button> 
+            <button class="btn btn-equal">=</button> 
+        </div>
+         
+        <div class="buttons" id="programmer-buttons" style="display: none;"> 
+            <!-- 程序员计算器按钮 -->
+            <!-- 第一行 --> 
+            <button class="btn btn-function">Hex</button> 
+            <button class="btn btn-function">Dec</button>
+            <button class="btn btn-function">Oct</button> 
+            <button class="btn btn-function">Bin</button> 
+            <button class="btn btn-clear">C</button>
+             
+            <!-- 第二行 --> 
+            <button class="btn btn-function">AND</button> 
+            <button class="btn btn-function">OR</button>
+            <button class="btn btn-function">XOR</button>
+            <button class="btn btn-function">NOT</button>
+            <button class="btn btn-function">DEL</button> 
+            
+            <!-- 第三行 --> 
+            <button class="btn btn-function"><<</button> 
+            <button class="btn btn-function">>></button> 
+            <button class="btn btn-function">A</button> 
+            <button class="btn btn-function">B</button>
+            <button class="btn btn-function">C</button>
+             
+            <!-- 第四行 --> 
+            <button class="btn">7</button> 
+            <button class="btn">8</button> 
+            <button class="btn">9</button> 
+            <button class="btn btn-operator">÷</button> 
+            <button class="btn btn-function">D</button> 
+            
+            <!-- 第五行 -->
+            <button class="btn">4</button>
+            <button class="btn">5</button>
+            <button class="btn">6</button>
+            <button class="btn btn-operator">×</button>
+            <button class="btn btn-function">E</button> 
+            
+            <!-- 第六行 --> 
+            <button class="btn">1</button> 
+            <button class="btn">2</button> 
+            <button class="btn">3</button> 
+            <button class="btn btn-operator">-</button>
+            <button class="btn btn-function">F</button>
+             
+            <!-- 第七行 --> 
+            <button class="btn" style="grid-column: span 2;">0</button>
+            <button class="btn btn-function">MOD</button> 
+            <button class="btn btn-operator">+</button>
+            <button class="btn btn-equal">=</button> 
+        </div>
+    </div> 
+ 
+    <script> 
+        document.addEventListener('DOMContentLoaded',  function() { 
+            const historyDisplay = document.getElementById('history');  
+            const currentDisplay = document.getElementById('current');  
+            const basicMode = document.getElementById('basic-mode'); 
+            const scientificMode = document.getElementById('scientific-mode');  
+            const programmerMode = document.getElementById('programmer-mode');  
+            const basicButtons = document.getElementById('basic-buttons'); 
+            const scientificButtons = document.getElementById('scientific-buttons'); 
+            const programmerButtons = document.getElementById('programmer-buttons');  
+             
+            let currentValue = '0';
+            let previousValue = ''; 
+            let operation = null;
+            let resetScreen = false; 
+            let memory = 0;
+            let lastAnswer = 0;
+             
+            // 模式切换 
+            basicMode.addEventListener('click',  function() { 
+                basicMode.classList.add('active'); 
+                scientificMode.classList.remove('active'); 
+                programmerMode.classList.remove('active'); 
+                basicButtons.style.display  = 'grid';
+                scientificButtons.style.display  = 'none'; 
+                programmerButtons.style.display  = 'none';
+            }); 
+             
+            scientificMode.addEventListener('click',  function() {
+                basicMode.classList.remove('active'); 
+                scientificMode.classList.add('active'); 
+                programmerMode.classList.remove('active'); 
+                basicButtons.style.display  = 'none';
+                scientificButtons.style.display  = 'grid'; 
+                programmerButtons.style.display  = 'none';
+            });
+             
+            programmerMode.addEventListener('click',  function() { 
+                basicMode.classList.remove('active');  
+                scientificMode.classList.remove('active');  
+                programmerMode.classList.add('active');  
+                basicButtons.style.display  = 'none'; 
+                scientificButtons.style.display  = 'none';
+                programmerButtons.style.display  = 'grid'; 
+            }); 
+            
+            // 为所有按钮添加点击事件 
+            document.querySelectorAll('.btn').forEach(button  => {
+                button.addEventListener('click',  function() {
+                    const value = this.textContent;  
+                     
+                    // 数字按钮 
+                    if (!isNaN(value) || value === '.') {
+                        if (resetScreen) {
+                            currentValue = '0'; 
+                            resetScreen = false; 
+                        } 
+                         
+                        if (value === '.' && currentValue.includes('.'))  {
+                            return;
+                        }
+                        
+                        if (currentValue === '0' && value !== '.') {
+                            currentValue = value;
+                        } else { 
+                            currentValue += value; 
+                        } 
+                         
+                        currentDisplay.textContent  = currentValue; 
+                    } 
+                     
+                    // 运算符按钮
+                    else if (['+', '-', '×', '÷'].includes(value)) { 
+                        if (operation !== null) { 
+                            calculate();
+                        }
+                         
+                        previousValue = currentValue;
+                        operation = value; 
+                        historyDisplay.textContent  = previousValue + ' ' + operation; 
+                        resetScreen = true; 
+                    } 
+                     
+                    // 等号按钮 
+                    else if (value === '=') { 
+                        calculate();
+                        operation = null; 
+                    }
+                     
+                    // 清除按钮
+                    else if (value === 'C') {
+                        clear();
+                    }
+                     
+                                        // 删除按钮
+                                        else if (value === 'DEL') { 
+                        if (currentValue.length  > 1) {
+                            currentValue = currentValue.slice(0,  -1);
+                        } else { 
+                            currentValue = '0';
+                        }
+                        currentDisplay.textContent  = currentValue;
+                    }
+                     
+                    // 正负号切换
+                    else if (value === '±') { 
+                        currentValue = (parseFloat(currentValue) * -1).toString(); 
+                        currentDisplay.textContent  = currentValue; 
+                    } 
+                    
+                    // 百分比 
+                    else if (value === '%') {
+                        currentValue = (parseFloat(currentValue) / 100).toString();
+                        currentDisplay.textContent  = currentValue;
+                    }
+                     
+                    // 平方根
+                    else if (value === '√') { 
+                        if (parseFloat(currentValue) >= 0) { 
+                            currentValue = Math.sqrt(parseFloat(currentValue)).toString(); 
+                            currentDisplay.textContent  = currentValue;
+                        } else {
+                            currentDisplay.textContent  = 'Error'; 
+                            resetScreen = true; 
+                        } 
+                    } 
+                     
+                    // 平方 
+                    else if (value === 'x²') { 
+                        currentValue = (parseFloat(currentValue) ** 2).toString();
+                        currentDisplay.textContent  = currentValue;
+                    }
+                     
+                    // 倒数
+                    else if (value === '1/x') { 
+                        if (parseFloat(currentValue) !== 0) { 
+                            currentValue = (1 / parseFloat(currentValue)).toString(); 
+                            currentDisplay.textContent  = currentValue; 
+                        } else {
+                            currentDisplay.textContent  = 'Error';
+                            resetScreen = true;
+                        }
+                    }
+                    
+                    // 记忆功能
+                    else if (value === 'MC') {
+                        memory = 0;
+                    }
+                    else if (value === 'MR') {
+                        currentValue = memory.toString(); 
+                        currentDisplay.textContent  = currentValue;
+                    }
+                    else if (value === 'M+') { 
+                        memory += parseFloat(currentValue);
+                    }
+                    else if (value === 'M-') { 
+                        memory -= parseFloat(currentValue); 
+                    } 
+                     
+                    // 上次计算结果 
+                    else if (value === 'Ans') {
+                        currentValue = lastAnswer.toString();  
+                        currentDisplay.textContent  = currentValue; 
+                    } 
+                    
+                    // 科学计算功能
+                    else if (value === 'sin') {
+                        currentValue = Math.sin(parseFloat(currentValue)).toString();  
+                        currentDisplay.textContent  = currentValue; 
+                    } 
+                    else if (value === 'cos') {
+                        currentValue = Math.cos(parseFloat(currentValue)).toString();  
+                        currentDisplay.textContent  = currentValue; 
+                    } 
+                    else if (value === 'tan') { 
+                        currentValue = Math.tan(parseFloat(currentValue)).toString(); 
+                        currentDisplay.textContent  = currentValue;
+                    }
+                    else if (value === 'log') { 
+                        if (parseFloat(currentValue) > 0) { 
+                            currentValue = Math.log10(parseFloat(currentValue)).toString(); 
+                            currentDisplay.textContent  = currentValue;
+                        } else { 
+                            currentDisplay.textContent  = 'Error'; 
+                            resetScreen = true; 
+                        } 
+                    } 
+                    else if (value === 'ln') {
+                        if (parseFloat(currentValue) > 0) { 
+                            currentValue = Math.log(parseFloat(currentValue)).toString(); 
+                            currentDisplay.textContent  = currentValue;
+                        } else { 
+                            currentDisplay.textContent  = 'Error';
+                            resetScreen = true;
+                        }
+                    }
+                    else if (value === 'sin⁻¹') { 
+                        if (parseFloat(currentValue) >= -1 && parseFloat(currentValue) <= 1) { 
+                            currentValue = Math.asin(parseFloat(currentValue)).toString();  
+                            currentDisplay.textContent  = currentValue; 
+                        } else {
+                            currentDisplay.textContent  = 'Error';
+                            resetScreen = true;
+                        }
+                    }
+                    else if (value === 'cos⁻¹') { 
+                        if (parseFloat(currentValue) >= -1 && parseFloat(currentValue) <= 1) { 
+                            currentValue = Math.acos(parseFloat(currentValue)).toString(); 
+                            currentDisplay.textContent  = currentValue;
+                        } else { 
+                            currentDisplay.textContent  = 'Error';
+                            resetScreen = true;
+                        }
+                    }
+                    else if (value === 'tan⁻¹') { 
+                        currentValue = Math.atan(parseFloat(currentValue)).toString(); 
+                        currentDisplay.textContent  = currentValue;
+                    }
+                    else if (value === '10ˣ') { 
+                        currentValue = (10 ** parseFloat(currentValue)).toString();
+                        currentDisplay.textContent  = currentValue;
+                    }
+                    else if (value === 'eˣ') {
+                        currentValue = Math.exp(parseFloat(currentValue)).toString();  
+                        currentDisplay.textContent  = currentValue; 
+                    } 
+                    else if (value === 'π') { 
+                        currentValue = Math.PI.toString();  
+                        currentDisplay.textContent  = currentValue; 
+                    } 
+                    else if (value === 'e') {
+                        currentValue = Math.E.toString(); 
+                        currentDisplay.textContent  = currentValue;
+                    }
+                    else if (value === 'x!') {
+                        if (parseFloat(currentValue) >= 0 && Number.isInteger(parseFloat(currentValue)))  { 
+                            currentValue = factorial(parseFloat(currentValue)).toString();
+                            currentDisplay.textContent  = currentValue;
+                        } else { 
+                            currentDisplay.textContent  = 'Error'; 
+                            resetScreen = true; 
+                        } 
+                    } 
+                     
+                    // 程序员计算器功能
+                    else if (value === 'Hex') {
+                        if (Number.isInteger(parseFloat(currentValue)))  { 
+                            currentValue = parseInt(currentValue).toString(16).toUpperCase(); 
+                            currentDisplay.textContent  = currentValue; 
+                        } 
+                    }
+                    else if (value === 'Dec') {
+                        // 如果当前是其他进制，转回十进制
+                        if (!/^\d+$/.test(currentValue)) {
+                            try {
+                                currentValue = parseInt(currentValue, 16).toString();
+                                currentDisplay.textContent  = currentValue;
+                            } catch (e) {
+                                currentDisplay.textContent  = 'Error'; 
+                                resetScreen = true; 
+                            } 
+                        } 
+                    } 
+                    else if (value === 'Oct') {
+                        if (Number.isInteger(parseFloat(currentValue)))  {
+                            currentValue = parseInt(currentValue).toString(8); 
+                            currentDisplay.textContent  = currentValue; 
+                        } 
+                    } 
+                    else if (value === 'Bin') {
+                        if (Number.isInteger(parseFloat(currentValue)))  { 
+                            currentValue = parseInt(currentValue).toString(2);
+                            currentDisplay.textContent  = currentValue;
+                        }
+                    }
+                    else if (value === 'AND') {
+                        if (operation !== null) { 
+                            calculate('AND');
+                        } else {
+                            previousValue = currentValue;
+                            operation = 'AND'; 
+                            historyDisplay.textContent  = previousValue + ' AND';
+                            resetScreen = true;
+                        }
+                    }
+                    else if (value === 'OR') {
+                        if (operation !== null) { 
+                            calculate('OR'); 
+                        } else {
+                            previousValue = currentValue;
+                            operation = 'OR'; 
+                            historyDisplay.textContent  = previousValue + ' OR'; 
+                            resetScreen = true; 
+                        } 
+                    } 
+                    else if (value === 'XOR') {
+                        if (operation !== null) { 
+                            calculate('XOR'); 
+                        } else {
+                            previousValue = currentValue;
+                            operation = 'XOR'; 
+                            historyDisplay.textContent  = previousValue + ' XOR';
+                            resetScreen = true;
+                        }
+                    }
+                    else if (value === 'NOT') {
+                        if (Number.isInteger(parseFloat(currentValue)))  { 
+                            currentValue = (~parseInt(currentValue)).toString();
+                            currentDisplay.textContent  = currentValue;
+                        }
+                    }
+                    else if (value === '<<') {
+                        if (operation !== null) {
+                            calculate('<<');
+                        } else { 
+                            previousValue = currentValue; 
+                            operation = '<<';
+                            historyDisplay.textContent  = previousValue + ' <<';
+                            resetScreen = true;
+                        }
+                    }
+                    else if (value === '>>') {
+                        if (operation !== null) { 
+                            calculate('>>'); 
+                        } else {
+                            previousValue = currentValue;
+                            operation = '>>';
+                            historyDisplay.textContent  = previousValue + ' >>';
+                            resetScreen = true;
+                        }
+                    }
+                    else if (value === 'MOD') {
+                        if (operation !== null) { 
+                            calculate('MOD'); 
+                        } else {
+                            previousValue = currentValue; 
+                            operation = 'MOD';
+                            historyDisplay.textContent  = previousValue + ' MOD';
+                            resetScreen = true;
+                        }
+                    }
+                    // 十六进制字母
+                    else if (['A', 'B', 'C', 'D', 'E', 'F'].includes(value)) {
+                        if (resetScreen) { 
+                            currentValue = value;
+                            resetScreen = false; 
+                        } else {
+                            currentValue += value;
+                        }
+                        currentDisplay.textContent  = currentValue;
+                    }
+                }); 
+            }); 
+             
+            // 计算函数
+            function calculate(op = operation) {
+                let result; 
+                const prev = parseFloat(previousValue);
+                const current = parseFloat(currentValue);
+                 
+                if (isNaN(prev) || isNaN(current)) return;
+                
+                switch (op) {
+                    case '+':
+                        result = prev + current;
+                        break; 
+                    case '-':
+                        result = prev - current;
+                        break; 
+                    case '×':
+                        result = prev * current; 
+                        break; 
+                    case '÷': 
+                        if (current === 0) { 
+                            currentDisplay.textContent  = 'Error';
+                            resetScreen = true;
+                            return;
+                        }
+                        result = prev / current; 
+                        break; 
+                    case 'x^y':
+                        result = Math.pow(prev,  current);
+                        break; 
+                    case 'AND':
+                        result = prev & current;
+                        break; 
+                    case 'OR': 
+                        result = prev | current; 
+                        break;
+                    case 'XOR':
+                        result = prev ^ current; 
+                        break; 
+                    case '<<':
+                        result = prev << current;
+                        break;
+                        case '<<': 
+                        result = prev << current; 
+                        break; 
+                    case '>>':
+                        result = prev >> current;
+                        break; 
+                    case 'MOD': 
+                        if (current === 0) {
+                            currentDisplay.textContent  = 'Error';
+                            resetScreen = true;
+                            return; 
+                        } 
+                        result = prev % current; 
+                        break;
+                    default:
+                        return;
+                } 
+                
+                // 更新显示 
+                historyDisplay.textContent  = `${previousValue} ${op} ${currentValue} =`; 
+                currentValue = result.toString(); 
+                currentDisplay.textContent  = currentValue;
+                lastAnswer = result; 
+                resetScreen = true;
+            } 
+             
+            // 清除函数
+            function clear() {
+                currentValue = '0';
+                previousValue = ''; 
+                operation = null;
+                currentDisplay.textContent  = currentValue;
+                historyDisplay.textContent  = ''; 
+            }
+             
+            // 阶乘函数 
+            function factorial(n) { 
+                if (n === 0 || n === 1) return 1; 
+                let result = 1;
+                for (let i = 2; i <= n; i++) {
+                    result *= i;
+                } 
+                return result;
+            } 
+            
+            // 键盘支持
+            document.addEventListener('keydown',  function(event) { 
+                const key = event.key; 
+                 
+                // 数字和小数点
+                if (!isNaN(key) || key === '.') {
+                    document.querySelector(`.btn:not(.btn-function):not(.btn-operator):not(.btn-equal):not(.btn-clear):contains('${key}')`).click();  
+                } 
+                
+                // 运算符
+                else if (['+', '-'].includes(key)) {
+                    document.querySelector(`.btn-operator:contains('${key}')`).click();  
+                }
+                else if (key === '*') {
+                    document.querySelector(`.btn-operator:contains('×')`).click(); 
+                } 
+                else if (key === '/') {
+                    document.querySelector(`.btn-operator:contains('÷')`).click();  
+                }
+                 
+                // 等号和回车
+                else if (key === '=' || key === 'Enter') { 
+                    document.querySelector(`.btn-equal`).click();  
+                }
+                 
+                // 退格和删除
+                else if (key === 'Backspace' || key === 'Delete') {
+                    document.querySelector(`.btn-function:contains('DEL')`).click(); 
+                }
+                 
+                // Escape 清除
+                else if (key === 'Escape') {
+                    document.querySelector(`.btn-clear`).click();  
+                }
+            });
+             
+            // 添加:contains选择器
+            jQuery.expr[':'].contains  = function(a, i, m) {
+                return jQuery(a).text().toUpperCase() 
+                    .indexOf(m[3].toUpperCase()) >= 0; 
+            };
+        }); 
+    </script>
+</body>
+</html>
