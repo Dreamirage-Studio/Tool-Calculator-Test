@@ -140,9 +140,590 @@
             color: #4d7cfe; 
             font-weight: bold;
         }
+        
+        /* 设置按钮样式 */
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background-color: #e6e7ee;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            color: #4d7cfe;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .settings-btn:active {
+            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 动态改变设置按钮颜色以适应主题 */
+        body.rain-theme .settings-btn {
+            background-color: rgba(30, 40, 50, 0.6);
+            color: #a0c8ff;
+            backdrop-filter: blur(3px);
+            border: 1px solid rgba(100, 150, 200, 0.2);
+        }
+        
+        /* 设置面板样式 */
+        .settings-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 400px;
+            background-color: #e6e7ee;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .settings-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .settings-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 20px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .close-btn:hover {
+            color: #555;
+        }
+        
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #777;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .tab-btn.active {
+            color: #4d7cfe;
+            font-weight: bold;
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #4d7cfe;
+        }
+        
+        .tab-content {
+            padding: 20px;
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 表单元素样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            background-color: #e6e7ee;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .switch-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e6e7ee;
+            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        input:checked + .slider {
+            background-color: #4d7cfe;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* 黑暗主题 */
+        body.dark-mode {
+            background-color: #2d3748;
+        }
+        
+        body.dark-mode .calculator {
+            background-color: #2d3748;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        body.dark-mode .display {
+            background-color: #2d3748;
+            box-shadow: inset 5px 5px 10px #1a202c,
+                        inset -5px -5px 10px #3a4a63;
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .current {
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .history {
+            color: #a0aec0;
+        }
+        
+        body.dark-mode .btn,
+        body.dark-mode .mode-btn {
+            background-color: #2d3748;
+            box-shadow: 5px 5px 10px #1a202c,
+                        -5px -5px 10px #3a4a63;
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .btn:active,
+        body.dark-mode .mode-btn.active {
+            box-shadow: inset 3px 3px 6px #1a202c,
+                        inset -3px -3px 6px #3a4a63;
+        }
+        
+        body.dark-mode .btn-operator {
+            color: #63b3ed;
+        }
+        
+        body.dark-mode .btn-function {
+            color: #f6ad55;
+        }
+        
+        body.dark-mode .btn-clear {
+            color: #fc8181;
+        }
+        
+        body.dark-mode .btn-equal {
+            background-color: #4299e1;
+        }
+        
+        body.dark-mode .settings-panel {
+            background-color: #2d3748;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        body.dark-mode .settings-header h2,
+        body.dark-mode .tab-btn.active {
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .close-btn,
+        body.dark-mode .tab-btn {
+            color: #a0aec0;
+        }
+        
+        body.dark-mode .form-group label {
+            color: #cbd5e0;
+        }
+        
+        body.dark-mode .form-group input[type="number"] {
+            background-color: #2d3748;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .slider {
+            background-color: #2d3748;
+            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 雨天主题 */
+        body.rain-theme {
+            background-color: #050d19;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 视频背景 */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease;
+            z-index: -1;
+        }
+        
+        body.rain-theme .video-background {
+            opacity: 0.85;
+        }
+        
+        /* 雨天主题覆盖层 */
+        body.rain-theme::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(5, 13, 25, 0.3), rgba(10, 20, 40, 0.5));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body.rain-theme .calculator {
+            background-color: rgba(20, 30, 45, 0.65);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(100, 150, 200, 0.25);
+        }
+        
+        body.rain-theme .display {
+            background-color: rgba(15, 25, 40, 0.7);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+            color: #a0c8ff;
+            border: 1px solid rgba(100, 150, 200, 0.25);
+        }
+        
+        body.rain-theme .current {
+            color: #d0e8ff;
+            text-shadow: 0 0 5px rgba(150, 200, 255, 0.5);
+        }
+        
+        body.rain-theme .history {
+            color: #80a0c0;
+        }
+        
+        body.rain-theme .btn {
+            background-color: rgba(40, 60, 80, 0.7);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            color: #c0d8f0;
+            border: 1px solid rgba(100, 150, 200, 0.2);
+        }
+        
+        body.rain-theme .btn:active {
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        body.rain-theme .btn-operator {
+            color: #80c0ff;
+        }
+        
+        body.rain-theme .btn-function {
+            color: #a0c0ff;
+        }
+        
+        body.rain-theme .btn-equal {
+            background-color: rgba(60, 100, 150, 0.8);
+            color: #e0f0ff;
+        }
+        
+        body.rain-theme .mode-btn {
+            background-color: rgba(40, 60, 80, 0.7);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            color: #a0c0e0;
+        }
+        
+        body.rain-theme .mode-btn.active {
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+            color: #90c8ff;
+        }
+        
+        body.rain-theme .settings-panel {
+            background-color: rgba(30, 40, 50, 0.8);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(100, 150, 200, 0.2);
+        }
+        
+        body.rain-theme .settings-header h2 {
+            color: #d0e0f0;
+        }
+        
+        body.rain-theme .close-btn {
+            color: #a0b0c0;
+        }
+        
+        body.rain-theme .tab-btn {
+            color: #90a0b0;
+        }
+        
+        body.rain-theme .tab-btn.active {
+            color: #a0c8ff;
+        }
+        
+        body.rain-theme .form-group label {
+            color: #b0c0d0;
+        }
+        
+        body.rain-theme .form-group input[type="number"] {
+            background-color: rgba(40, 50, 60, 0.7);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+            color: #d0e0f0;
+            border: 1px solid rgba(100, 150, 200, 0.2);
+        }
+        
+        /* 主题选择样式 */
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .theme-option {
+            position: relative;
+            height: 80px;
+            border-radius: 10px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .theme-option.selected {
+            border-color: #4d7cfe;
+        }
+        
+        .theme-option:hover {
+            transform: translateY(-2px);
+        }
+        
+        .theme-light {
+            background-color: #e6e7ee;
+        }
+        
+        .theme-dark {
+            background-color: #2d3748;
+        }
+        
+        .theme-rain {
+            background: linear-gradient(rgba(19, 30, 59, 0.7), rgba(10, 20, 40, 0.8));
+            position: relative;
+        }
+        
+        .theme-rain::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200" fill="none"><rect width="300" height="200" fill="rgba(10, 20, 40, 0.5)"/><rect x="120" y="130" width="60" height="70" fill="rgba(30, 40, 60, 0.8)"/><rect x="130" y="150" width="10" height="15" fill="rgba(150, 200, 255, 0.7)"/><rect x="160" y="150" width="10" height="15" fill="rgba(150, 200, 255, 0.7)"/><path d="M0 130 L 300 130" stroke="rgba(60, 80, 120, 0.6)" stroke-width="2"/><path d="M30 140 L40 160" stroke="rgba(120, 200, 255, 0.8)" stroke-width="1"/><path d="M70 150 L80 170" stroke="rgba(120, 200, 255, 0.8)" stroke-width="1"/><path d="M220 145 L230 165" stroke="rgba(120, 200, 255, 0.8)" stroke-width="1"/><path d="M260 155 L270 175" stroke="rgba(120, 200, 255, 0.8)" stroke-width="1"/></svg>');
+            background-size: cover;
+            opacity: 0.9;
+        }
+        
+        .theme-name {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 5px 0;
+            font-size: 12px;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .theme-dark .theme-name {
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        .theme-rain .theme-name {
+            color: #d0e0f0;
+            background-color: rgba(0, 20, 40, 0.5);
+        }
     </style> 
 </head> 
 <body> 
+    <video class="video-background" id="rain-video" loop muted>
+        <source src="zhuti/Crosswalk Rain.mp4" type="video/mp4">
+    </video>
+    
+    <button class="settings-btn" id="settings-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+    </button>
+    
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="settings-panel" id="settings-panel">
+        <div class="settings-header">
+            <h2>设置</h2>
+            <button class="close-btn" id="close-settings">&times;</button>
+        </div>
+        
+        <div class="settings-tabs">
+            <button class="tab-btn active" data-tab="general">通用</button>
+            <button class="tab-btn" data-tab="theme">主题</button>
+            <button class="tab-btn" data-tab="about">关于</button>
+        </div>
+        
+        <div class="tab-content active" id="general-tab">
+            <div class="form-group">
+                <label for="calculator-size">计算器大小 (宽度px)</label>
+                <input type="number" id="calculator-size" min="280" max="500" value="350">
+            </div>
+            
+            <div class="form-group">
+                <label for="decimal-places">小数点保留位数</label>
+                <input type="number" id="decimal-places" min="0" max="10" value="2">
+            </div>
+        </div>
+        
+        <div class="tab-content" id="theme-tab">
+            <div class="form-group switch-container">
+                <label for="dark-mode-switch">黑暗模式</label>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-switch">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label>主题选择</label>
+                <div class="theme-options">
+                    <div class="theme-option theme-light selected" data-theme="light">
+                        <div class="theme-name">默认</div>
+                    </div>
+                    <div class="theme-option theme-dark" data-theme="dark">
+                        <div class="theme-name">暗黑</div>
+                    </div>
+                    <div class="theme-option theme-rain" data-theme="rain">
+                        <div class="theme-name">雨天</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="about-tab">
+            <div style="text-align: center; padding: 20px;">
+                <h3 style="margin-bottom: 10px;">Dreamirage Tool - 计算器</h3>
+                <p style="margin-bottom: 5px;">版本: 1.0.0</p>
+                <p style="margin-bottom: 5px;">作者: Dreamirage Team</p>
+                <p style="color: #888; margin-top: 20px;">
+                    一个功能强大且美观的多功能计算器
+                </p>
+            </div>
+        </div>
+    </div>
+    
     <div class="calculator"> 
         <div class="display"> 
             <div class="history" id="history"></div>
@@ -313,13 +894,139 @@
             const scientificButtons = document.getElementById('scientific-buttons'); 
             const programmerButtons = document.getElementById('programmer-buttons');  
              
+            // 设置相关元素
+            const settingsBtn = document.getElementById('settings-btn');
+            const settingsPanel = document.getElementById('settings-panel');
+            const closeSettings = document.getElementById('close-settings');
+            const overlay = document.getElementById('overlay');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const calculatorSizeInput = document.getElementById('calculator-size');
+            const decimalPlacesInput = document.getElementById('decimal-places');
+            const darkModeSwitch = document.getElementById('dark-mode-switch');
+            const themeOptions = document.querySelectorAll('.theme-option');
+            
+            // 初始化设置
+            let decimalPlaces = 2;
+            let calculatorSize = 350;
+            let isDarkMode = false;
+            let currentTheme = 'light';
+             
             let currentValue = '0';
             let previousValue = ''; 
             let operation = null;
             let resetScreen = false; 
             let memory = 0;
             let lastAnswer = 0;
-             
+            
+            // 设置按钮点击事件
+            settingsBtn.addEventListener('click', function() {
+                settingsPanel.classList.add('active');
+                overlay.classList.add('active');
+            });
+            
+            // 关闭设置面板
+            closeSettings.addEventListener('click', function() {
+                settingsPanel.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // 点击遮罩层关闭设置面板
+            overlay.addEventListener('click', function() {
+                settingsPanel.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // 选项卡切换
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    document.getElementById(`${btn.dataset.tab}-tab`).classList.add('active');
+                });
+            });
+            
+            // 设置计算器大小
+            calculatorSizeInput.addEventListener('change', function() {
+                calculatorSize = parseInt(this.value);
+                document.querySelector('.calculator').style.width = `${calculatorSize}px`;
+            });
+            
+            // 设置小数点保留位数
+            decimalPlacesInput.addEventListener('change', function() {
+                decimalPlaces = parseInt(this.value);
+                // 如果当前显示的是数字，则应用新的小数点设置
+                if (!isNaN(parseFloat(currentValue))) {
+                    currentValue = parseFloat(currentValue).toFixed(decimalPlaces);
+                    currentDisplay.textContent = currentValue;
+                }
+            });
+            
+            // 切换暗黑模式
+            darkModeSwitch.addEventListener('change', function() {
+                isDarkMode = this.checked;
+                const rainVideo = document.getElementById('rain-video');
+                
+                if (isDarkMode) {
+                    document.body.classList.add('dark-mode');
+                    document.body.classList.remove('rain-theme');
+                    currentTheme = 'dark';
+                    updateThemeSelection('dark');
+                    rainVideo.pause();
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    if (currentTheme === 'rain') {
+                        document.body.classList.add('rain-theme');
+                        rainVideo.play();
+                    } else {
+                        currentTheme = 'light';
+                        updateThemeSelection('light');
+                        rainVideo.pause();
+                    }
+                }
+            });
+            
+            // 主题选择
+            themeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const theme = this.dataset.theme;
+                    currentTheme = theme;
+                    
+                    // 更新选中状态
+                    updateThemeSelection(theme);
+                    
+                    // 应用主题
+                    document.body.classList.remove('dark-mode', 'rain-theme');
+                    const rainVideo = document.getElementById('rain-video');
+                    
+                    if (theme === 'dark') {
+                        document.body.classList.add('dark-mode');
+                        darkModeSwitch.checked = true;
+                        rainVideo.pause();
+                    } else if (theme === 'rain') {
+                        document.body.classList.add('rain-theme');
+                        darkModeSwitch.checked = false;
+                        rainVideo.play();
+                    } else {
+                        darkModeSwitch.checked = false;
+                        rainVideo.pause();
+                    }
+                });
+            });
+            
+            // 更新主题选择UI
+            function updateThemeSelection(theme) {
+                themeOptions.forEach(option => {
+                    if (option.dataset.theme === theme) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+            }
+            
             // 模式切换 
             basicMode.addEventListener('click',  function() { 
                 basicMode.classList.add('active'); 
@@ -697,9 +1404,6 @@
                     case '<<':
                         result = prev << current;
                         break;
-                        case '<<': 
-                        result = prev << current; 
-                        break; 
                     case '>>':
                         result = prev >> current;
                         break; 
@@ -714,6 +1418,11 @@
                     default:
                         return;
                 } 
+                
+                // 应用小数点保留位数
+                if (!Number.isInteger(result)) {
+                    result = parseFloat(result.toFixed(decimalPlaces));
+                }
                 
                 // 更新显示 
                 historyDisplay.textContent  = `${previousValue} ${op} ${currentValue} =`; 
