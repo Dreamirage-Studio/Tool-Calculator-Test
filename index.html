@@ -6,7 +6,7 @@
     <title>Dreamirage Tool - 官方工具箱</title>
     <meta name="keywords" content="计算器,工具箱,Dreamirage,多功能计算器,在线工具,程序员计算器,时间转换,单位换算,免费在线工具,网页工具,实用工具,在线计算,金融工具,Dreamirage Tool">
     <meta name="description" content="Dreamirage Tool官方工具箱，提供计算器等多种实用工具，助力高效工作与生活">
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css">
     <style> 
         :root {
             --primary-color: #4361ee;
@@ -232,6 +232,7 @@
             background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(72, 149, 239, 0.2) 100%);
             margin-right: 15px;
             transition: var(--transition);
+            position: relative;
         }
         
         .tool-card:hover .tool-icon-wrapper {
@@ -240,9 +241,16 @@
         }
         
         .tool-icon {
-            width: 32px;
-            height: 32px;
+            width: 24px;
+            height: 24px;
             color: var(--primary-color);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .tool-info {
@@ -395,7 +403,7 @@
     
     <div class="container">
         <div class="header">
-            <img src="logo.png" alt="Dreamirage Logo" class="logo">
+            <img src="img/logo.png" alt="Dreamirage Logo" class="logo">
             <h1 class="title">Dreamirage Tool官方工具箱</h1>
             <p class="subtitle">一站式在线工具集合，提升您的工作效率和日常生活便利性</p>
         </div>

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>时间戳转换工具 - Dreamirage Tool</title>
     <meta name="description" content="在时间戳和人类可读时间格式之间轻松转换">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        /* 使用本地MiSans字体，不再引用Google Fonts */
         
         :root {
             --primary-color: #4361ee;
@@ -26,7 +26,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Nunito', 'Arial', sans-serif;
+            font-family: 'MiSans', 'Arial', sans-serif;
         }
         
         body {
@@ -196,7 +196,7 @@
         }
         
         .result-value {
-            font-family: monospace;
+            font-family: 'MiSans', monospace;
             font-size: 16px;
             word-break: break-all;
         }
@@ -273,7 +273,7 @@
     <div class="container">
         <header class="header">
             <a href="../index.html" class="logo-container">
-                <img src="../logo.png" alt="Dreamirage Logo" class="logo">
+                <img src="../img/logo.png" alt="Dreamirage Logo" class="logo">
                 <h1 class="title">时间戳转换工具</h1>
             </a>
             <a href="../index.html" class="home-btn">

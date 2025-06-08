@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dreamirage Tool - 后台管理系统</title>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* 预加载字体，避免使用Google Fonts */
         @font-face {
@@ -146,6 +146,17 @@
             margin-right: 12px;
             width: 20px;
             text-align: center;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .menu-icon i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         
         .sidebar-footer {
@@ -251,6 +262,14 @@
             justify-content: center;
             margin-right: 15px;
             font-size: 18px;
+            position: relative;
+        }
+        
+        .page-icon i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         
         .user-profile {
@@ -323,6 +342,14 @@
             justify-content: center;
             color: white;
             font-size: 18px;
+            position: relative;
+        }
+        
+        .card-icon i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         
         .card-icon.tools {
@@ -432,6 +459,14 @@
             color: white;
             font-size: 16px;
             margin-right: 10px;
+            position: relative;
+        }
+        
+        .tool-icon i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         
         .tool-info {
@@ -737,8 +772,8 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-container">
-                <img src="../logo.png" alt="Dreamirage Logo" class="sidebar-logo">
-                <h1 class="sidebar-title">管理系统</h1>
+                <img src="../img/logo.png" alt="Dreamirage Logo" class="sidebar-logo">
+                <h1 class="sidebar-title">管理后台</h1>
             </div>
             <button class="toggle-btn" id="toggle-btn">
                 <i class="fas fa-bars"></i>
@@ -1310,8 +1345,8 @@
                 }
             });
             
-            // 保存到本地存储
-            saveToolsStatus();
+            // 直接修改index.html文件
+            updateIndexHtmlFile();
             
             // 更新UI
             loadRecentTools();
@@ -1331,60 +1366,119 @@
             }, 3000);
         }
         
-        // 保存工具状态到本地存储
-        function saveToolsStatus() {
-            const statusData = toolsData.map(tool => ({
-                id: tool.id,
-                status: tool.status,
-                lastModified: tool.lastModified
-            }));
-            
-            const maintenanceMessage = document.getElementById('maintenance-message').value;
-            
-            localStorage.setItem('dreamirage_tools_status', JSON.stringify(statusData));
-            localStorage.setItem('dreamirage_maintenance_message', maintenanceMessage);
-            
-            // 保存完整工具数据供前端页面使用
-            localStorage.setItem('dreamirage_tools_data', JSON.stringify(toolsData));
+        // 直接修改index.html文件
+        function updateIndexHtmlFile() {
+            // 读取index.html文件内容
+            fetch('../index.html')
+                .then(response => response.text())
+                .then(html => {
+                    // 查找toolsData数组定义开始位置
+                    const toolsDataStartRegex = /let\s+toolsData\s*=\s*\[/;
+                    const toolsDataStart = html.match(toolsDataStartRegex);
+                    
+                    if (!toolsDataStart) {
+                        console.error('无法在index.html中找到toolsData定义');
+                        showToast('保存失败：无法找到toolsData定义');
+                        return;
+                    }
+                    
+                    // 查找toolsData数组结束位置
+                    const startIndex = html.indexOf(toolsDataStart[0]);
+                    let braceCount = 0;
+                    let endIndex = startIndex;
+                    
+                    // 遍历文件内容找到数组的结束位置
+                    for (let i = startIndex; i < html.length; i++) {
+                        if (html[i] === '[') braceCount++;
+                        if (html[i] === ']') braceCount--;
+                        
+                        if (braceCount === 0 && html[i] === ']') {
+                            endIndex = i + 1;
+                            break;
+                        }
+                    }
+                    
+                    if (startIndex === endIndex) {
+                        console.error('无法在index.html中找到toolsData数组结束位置');
+                        showToast('保存失败：无法解析toolsData数组');
+                        return;
+                    }
+                    
+                    // 生成新的toolsData数组字符串
+                    const newToolsDataString = 'let toolsData = ' + JSON.stringify(toolsData, null, 4);
+                    
+                    // 替换原有的toolsData数组
+                    const newHtml = html.substring(0, startIndex) + newToolsDataString + html.substring(endIndex);
+                    
+                    // 使用fetch发送POST请求保存更新后的文件
+                    fetch('/admin/save_index.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ content: newHtml })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('index.html已成功更新');
+                        } else {
+                            console.error('保存index.html失败:', data.error);
+                            showToast('保存失败：' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('保存index.html时出错:', error);
+                        showToast('保存失败：请检查服务器权限');
+                    });
+                })
+                .catch(error => {
+                    console.error('读取index.html时出错:', error);
+                    showToast('保存失败：无法读取index.html');
+                });
         }
         
-        // 从本地存储加载工具状态
+        // 保存工具状态到本地存储 - 保留此函数但修改其功能
+        function saveToolsStatus() {
+            // 直接更新index.html文件
+            updateIndexHtmlFile();
+        }
+        
+        // 从本地存储加载工具状态 - 修改为从index.html读取
         function loadToolsStatus() {
-            const savedStatus = localStorage.getItem('dreamirage_tools_status');
-            const savedMessage = localStorage.getItem('dreamirage_maintenance_message');
-            const savedToolsData = localStorage.getItem('dreamirage_tools_data');
-            
-            if (savedToolsData) {
-                try {
-                    const parsedData = JSON.parse(savedToolsData);
-                    if (Array.isArray(parsedData) && parsedData.length > 0) {
-                        // 使用完整的工具数据替换默认数据
-                        toolsData = parsedData;
+            // 从index.html加载工具数据
+            fetch('../index.html')
+                .then(response => response.text())
+                .then(html => {
+                    // 查找toolsData数组
+                    const toolsDataRegex = /let\s+toolsData\s*=\s*(\[[\s\S]*?\]);/;
+                    const match = html.match(toolsDataRegex);
+                    
+                    if (match && match[1]) {
+                        try {
+                            const extractedData = JSON.parse(match[1]);
+                            if (Array.isArray(extractedData) && extractedData.length > 0) {
+                                toolsData = extractedData;
+                                
+                                // 刷新UI
+                                loadToolsList();
+                                loadRecentTools();
+                                updateStats();
+                            }
+                        } catch (e) {
+                            console.error('解析index.html中的toolsData失败:', e);
+                        }
                     }
-                } catch (e) {
-                    console.error('解析工具数据失败:', e);
-                }
-            } else if (savedStatus) {
-                const statusData = JSON.parse(savedStatus);
-                
-                // 更新工具数据
-                statusData.forEach(item => {
-                    const toolIndex = toolsData.findIndex(tool => tool.id === item.id);
-                    if (toolIndex !== -1) {
-                        toolsData[toolIndex].status = item.status;
-                        toolsData[toolIndex].lastModified = item.lastModified;
-                    }
+                })
+                .catch(error => {
+                    console.error('读取index.html时出错:', error);
                 });
-            }
-            
+                
+            // 读取维护消息
+            const savedMessage = localStorage.getItem('dreamirage_maintenance_message');
             if (savedMessage) {
                 document.getElementById('maintenance-message').value = savedMessage;
             }
-            
-            // 刷新UI
-            loadToolsList();
-            loadRecentTools();
-            updateStats();
         }
 
         // 添加"添加工具"按钮到工具管理页面
@@ -1498,8 +1592,8 @@
                 // 更新统计数据
                 updateStats();
                 
-                // 保存到localStorage
-                saveToolsStatus();
+                // 更新index.html文件
+                updateIndexHtmlFile();
                 
                 // 关闭模态框
                 document.body.removeChild(modalOverlay);
@@ -1604,8 +1698,8 @@
                         // 更新统计数据
                         updateStats();
                         
-                        // 保存到localStorage
-                        saveToolsStatus();
+                        // 更新index.html文件
+                        updateIndexHtmlFile();
                         
                         // 关闭模态框
                         document.body.removeChild(modalOverlay);
@@ -1652,8 +1746,8 @@
                     // 更新统计数据
                     updateStats();
                     
-                    // 保存到localStorage
-                    saveToolsStatus();
+                    // 更新index.html文件
+                    updateIndexHtmlFile();
                     
                     // 关闭模态框
                     document.body.removeChild(modalOverlay);
