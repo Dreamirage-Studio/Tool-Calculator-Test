@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dreamirage Tool - 后台管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #536dfe;
+            --accent-color: #7c4dff;
+            --success-color: #00c853;
+            --warning-color: #ffab00;
+            --danger-color: #ff5252;
+            --text-color: #333;
+            --text-light: #666;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1a1c23;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #2d2b55 0%, #1a1a2e 100%);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 10;
+            transition: var(--transition);
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .toggle-btn:hover {
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+        
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition);
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+        
+        .menu-item.active {
+            background-color: rgba(108, 99, 255, 0.2);
+            color: white;
+            border-left-color: var(--primary-color);
+        }
+        
+        .menu-item:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+        
+        .menu-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            color: white;
+        }
+        
+        .logout-btn i {
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+        
+        .main-content.collapsed {
+            margin-left: 80px;
+        }
+        
+        .main-content.expanded {
+            margin-left: 0;
+        }
+        
+        .sidebar.collapsed {
+            width: 80px;
+        }
+        
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center;
+        }
+        
+        .sidebar.collapsed .sidebar-title,
+        .sidebar.collapsed .menu-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .menu-item {
+            justify-content: center;
+            padding: 15px 0;
+        }
+        
+        .sidebar.collapsed .menu-icon {
+            margin-right: 0;
+            font-size: 18px;
+        }
+        
+        .sidebar.collapsed .sidebar-footer {
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        
+        .sidebar.collapsed .logout-btn i {
+            margin-right: 0;
+        }
+        
+        .sidebar.collapsed .logout-btn span {
+            display: none;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .title-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .welcome-text {
+            margin-right: 15px;
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .card-icon.tools {
+            background-color: var(--primary-color);
+        }
+        
+        .card-icon.active {
+            background-color: var(--success-color);
+        }
+        
+        .card-icon.pending {
+            background-color: var(--warning-color);
+        }
+        
+        .card-icon.maintenance {
+            background-color: var(--danger-color);
+        }
+        
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .card-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .table-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .save-btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+        
+        .save-btn i {
+            margin-right: 8px;
+        }
+        
+        .save-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th {
+            background-color: rgba(108, 99, 255, 0.05);
+            color: var(--primary-color);
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid rgba(108, 99, 255, 0.1);
+        }
+        
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table tr:hover td {
+            background-color: rgba(108, 99, 255, 0.03);
+        }
+        
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        
+        .tool-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tool-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .tool-path {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .status-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            width: 140px;
+            background-color: white;
+        }
+        
+        .status-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 100px;
+        }
+        
+        .status-normal {
+            background-color: rgba(0, 200, 83, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-development {
+            background-color: rgba(255, 171, 0, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status-maintenance {
+            background-color: rgba(255, 82, 82, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .tool-date {
+            font-size: 14px;
+        }
+        
+        .maintenance-message {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #eee;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .message-title {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .message-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: vertical;
+            min-height: 100px;
+            font-size: 14px;
+        }
+        
+        .message-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab:hover:not(.active) {
+            border-bottom-color: #ddd;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar .sidebar-title,
+            .sidebar .menu-text {
+                display: none;
+            }
+            
+            .sidebar .menu-item {
+                justify-content: center;
+                padding: 15px 0;
+            }
+            
+            .sidebar .menu-icon {
+                margin-right: 0;
+                font-size: 18px;
+            }
+            
+            .sidebar .sidebar-footer {
+                display: flex;
+                justify-content: center;
+                padding: 15px 0;
+            }
+            
+            .sidebar .logout-btn i {
+                margin-right: 0;
+            }
+            
+            .sidebar .logout-btn span {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+            }
+            
+            .sidebar.mobile-visible {
+                transform: translateX(0);
+            }
+            
+            .sidebar .sidebar-title,
+            .sidebar .menu-text {
+                display: block;
+            }
+            
+            .sidebar .menu-item {
+                justify-content: flex-start;
+                padding: 12px 20px;
+            }
+            
+            .sidebar .menu-icon {
+                margin-right: 12px;
+            }
+            
+            .sidebar .sidebar-footer {
+                display: block;
+                padding: 20px;
+            }
+            
+            .sidebar .logout-btn i {
+                margin-right: 10px;
+            }
+            
+            .sidebar .logout-btn span {
+                display: inline;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-profile {
+                margin-top: 20px;
+                align-self: flex-end;
+            }
+        }
+        
+        /* 保存成功提示框 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .toast i {
+            margin-right: 10px;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+                margin-right: 15px;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+        }
+        
+        /* 遮罩层 */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color); }
+        .form-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-input:focus { outline: none; border-color: var(--primary-color); }
+        .settings-section-title { font-size: 18px; font-weight: 700; color: var(--text-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="../logo.png" alt="Dreamirage Logo" class="sidebar-logo">
+                <h1 class="sidebar-title">管理系统</h1>
+            </div>
+            <button class="toggle-btn" id="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="menu-item active" data-tab="dashboard">
+                <i class="fas fa-tachometer-alt menu-icon"></i>
+                <span class="menu-text">仪表盘</span>
+            </li>
+            <li class="menu-item" data-tab="tools">
+                <i class="fas fa-tools menu-icon"></i>
+                <span class="menu-text">工具管理</span>
+            </li>
+            <li class="menu-item" data-tab="settings">
+                <i class="fas fa-cog menu-icon"></i>
+                <span class="menu-text">系统设置</span>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <div class="logout-btn" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出登录</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content" id="main-content">
+        <div class="header">
+            <div class="title-container">
+                <button class="mobile-toggle" id="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">
+                    <div class="page-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    仪表盘
+                </h1>
+            </div>
+            
+            <div class="user-profile">
+                <div class="welcome-text">
+                    <div>欢迎回来，</div>
+                    <div class="user-name">Aflydream</div>
+                </div>
+                <div class="avatar">A</div>
+            </div>
+        </div>
+        
+        <!-- 保存成功提示框 -->
+        <div class="toast" id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span>设置已成功保存！</span>
+        </div>
+        
+        <!-- Tab内容区域 -->
+        <div class="tab-content active" id="dashboard-content">
+            <div class="cards-container">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon tools">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="card-title">总工具数</div>
+                    </div>
+                    <div class="card-value" id="total-tools-count">12</div>
+                    <div class="card-label">所有可用工具</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon active">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-title">正常工具</div>
+                    </div>
+                    <div class="card-value" id="normal-count">12</div>
+                    <div class="card-label">可正常使用的工具</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon pending">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div class="card-title">开发中工具</div>
+                    </div>
+                    <div class="card-value" id="development-count">0</div>
+                    <div class="card-label">正在开发的工具</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon maintenance">
+                            <i class="fas fa-wrench"></i>
+                        </div>
+                        <div class="card-title">维护中工具</div>
+                    </div>
+                    <div class="card-value" id="maintenance-count">0</div>
+                    <div class="card-label">正在维护的工具</div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <div class="table-header">
+                    <h2 class="table-title">最近修改的工具</h2>
+                </div>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>工具名称</th>
+                            <th>状态</th>
+                            <th>最后修改时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-tools">
+                        <!-- 最近修改的工具将通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tools-content">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2 class="table-title">工具状态管理</h2>
+                    <button class="save-btn" id="save-settings-btn">
+                        <i class="fas fa-save"></i> 保存设置
+                    </button>
+                </div>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>工具名称</th>
+                            <th>路径</th>
+                            <th>状态</th>
+                            <th>最后修改时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tools-list">
+                        <!-- 工具列表将通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+                
+                <div class="maintenance-message">
+                    <div class="message-header">
+                        <div class="message-title">维护/开发中提示信息</div>
+                    </div>
+                    <textarea id="maintenance-message" class="message-input" placeholder="当工具处于维护或开发中状态时，将向用户显示此消息...">很抱歉，该工具目前正在维护/开发中，暂时无法使用。请稍后再试或联系管理员获取更多信息。</textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="settings-content">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2 class="table-title">系统设置</h2>
+                    <button class="save-btn" id="save-system-settings-btn">
+                        <i class="fas fa-save"></i> 保存设置
+                    </button>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" data-settings-tab="general">基本设置</div>
+                    <div class="tab" data-settings-tab="security">安全设置</div>
+                    <div class="tab" data-settings-tab="backup">备份与恢复</div>
+                </div>
+                
+                <div class="tab-content active" id="general-settings" style="padding: 20px;">
+                    <h3 class="settings-section-title">网站信息</h3>
+                    <div class="form-group">
+                        <label for="site-title" class="form-label">主标题</label>
+                        <input type="text" id="site-title" class="form-input" placeholder="例如：Dreamirage Tool官方工具箱">
+                    </div>
+                    <div class="form-group">
+                        <label for="site-subtitle" class="form-label">副标题</label>
+                        <input type="text" id="site-subtitle" class="form-input" placeholder="例如：一站式在线工具集合...">
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="security-settings" style="padding: 20px;">
+                    <h3 class="settings-section-title">管理员密码</h3>
+                    <div class="form-group">
+                        <label for="current-password" class="form-label">当前密码</label>
+                        <input type="password" id="current-password" class="form-input" placeholder="请输入当前密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password" class="form-label">新密码</label>
+                        <input type="password" id="new-password" class="form-input" placeholder="请输入新密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password" class="form-label">确认新密码</label>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="请再次输入新密码">
+                    </div>
+                </div>
+
+                <div class="tab-content" id="backup-settings" style="padding: 20px;">
+                    <h3 class="settings-section-title">数据管理</h3>
+                    <p>您可以导出当前的工具数据为JSON文件进行备份。</p>
+                    <button class="save-btn" id="export-json-btn" style="margin-top: 10px; background-color: var(--success-color);"><i class="fas fa-download"></i> 导出工具数据 (tools.json)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 工具数据
+        let toolsData = [];
+        
+        // DOM元素
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const overlay = document.getElementById('overlay');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const tabContents = document.querySelectorAll('.main-content > .tab-content');
+        const logoutBtn = document.getElementById('logout-btn');
+        const toast = document.getElementById('toast');
+        const saveSettingsBtn = document.getElementById('save-settings-btn');
+        const toolsList = document.getElementById('tools-list');
+        const recentTools = document.getElementById('recent-tools');
+        const normalCount = document.getElementById('normal-count');
+        const developmentCount = document.getElementById('development-count');
+        const maintenanceCount = document.getElementById('maintenance-count');
+        const totalToolsCount = document.getElementById('total-tools-count');
+        const settingTabs = document.querySelectorAll('[data-settings-tab]');
+        const settingsTabContents = document.querySelectorAll('#settings-content .tab-content');
+        const saveSystemSettingsBtn = document.getElementById('save-system-settings-btn');
+        const exportJsonBtn = document.getElementById('export-json-btn');
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', async function() {
+            // 检查登录状态
+            checkLogin();
+
+            // 从JSON文件加载工具数据
+            await loadToolsData();
+            
+            // 从localStorage加载工具状态
+            loadToolsStatus();
+
+            // 加载工具列表
+            loadToolsList();
+            
+            // 加载最近修改的工具
+            loadRecentTools();
+            
+            // 更新统计数据
+            updateStats();
+
+            // 加载系统设置
+            loadSystemSettings();
+        });
+        
+        // 从JSON文件加载工具数据
+        async function loadToolsData() {
+            try {
+                const response = await fetch('../data/tools.json?v=' + new Date().getTime());
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                toolsData = await response.json();
+            } catch (error) {
+                console.error('Failed to load tools data:', error);
+                alert('工具数据加载失败，请检查data/tools.json文件是否存在或格式是否正确。页面将无法正常工作。');
+            }
+        }
+        
+        // 检查登录状态
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('dreamirage_admin_logged_in');
+            
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // 切换侧边栏
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+        });
+        
+        // 移动端菜单切换
+        mobileToggle.addEventListener('click', function() {
+            sidebar.classList.add('mobile-visible');
+            overlay.classList.add('show');
+        });
+        
+        // 点击遮罩层关闭菜单
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('mobile-visible');
+            overlay.classList.remove('show');
+        });
+        
+        // 菜单项点击事件
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // 移除所有活动状态
+                menuItems.forEach(i => i.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // 添加当前活动状态
+                this.classList.add('active');
+                
+                // 显示对应Tab内容
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+                
+                // 更新页面标题和图标
+                updatePageTitle(tabId);
+                
+                // 关闭移动端侧边栏
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('mobile-visible');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+        
+        // 设置选项卡点击事件
+        settingTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-settings-tab');
+
+                // 移除所有活动状态
+                settingTabs.forEach(t => t.classList.remove('active'));
+                settingsTabContents.forEach(c => c.classList.remove('active'));
+                
+                // 添加当前活动状态
+                this.classList.add('active');
+                document.getElementById(`${tabId}-settings`).classList.add('active');
+            });
+        });
+        
+        // 更新页面标题和图标
+        function updatePageTitle(tabId) {
+            const pageTitle = document.querySelector('.page-title');
+            const pageIcon = document.querySelector('.page-icon i');
+            
+            let title = '';
+            let icon = '';
+            
+            switch(tabId) {
+                case 'dashboard':
+                    title = '仪表盘';
+                    icon = 'fas fa-tachometer-alt';
+                    break;
+                case 'tools':
+                    title = '工具管理';
+                    icon = 'fas fa-tools';
+                    break;
+                case 'settings':
+                    title = '系统设置';
+                    icon = 'fas fa-cog';
+                    break;
+                default:
+                    title = '仪表盘';
+                    icon = 'fas fa-tachometer-alt';
+            }
+            
+            pageTitle.innerHTML = `<div class="page-icon"><i class="${icon}"></i></div>${title}`;
+
+            // 控制系统设置保存按钮的显示
+            saveSystemSettingsBtn.style.display = (tabId === 'settings') ? 'flex' : 'none';
+        }
+        
+        // 退出登录
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('dreamirage_admin_logged_in');
+            window.location.href = 'index.html';
+        });
+        
+        // 加载工具列表
+        function loadToolsList() {
+            toolsList.innerHTML = '';
+            
+            toolsData.forEach(tool => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="tool-info">
+                            <div class="tool-icon" style="background-color: var(--primary-color);">
+                                <i class="fas fa-${tool.icon}"></i>
+                            </div>
+                            <div class="tool-details">
+                                <div class="tool-name">${tool.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="tool-path">${tool.path}</div>
+                    </td>
+                    <td>
+                        <select class="status-select" data-tool-id="${tool.id}">
+                            <option value="normal" ${tool.status === 'normal' ? 'selected' : ''}>正常</option>
+                            <option value="development" ${tool.status === 'development' ? 'selected' : ''}>开发中</option>
+                            <option value="maintenance" ${tool.status === 'maintenance' ? 'selected' : ''}>修复中</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="tool-date">${tool.lastModified}</div>
+                    </td>
+                `;
+                
+                toolsList.appendChild(row);
+            });
+        }
+        
+        // 加载最近修改的工具
+        function loadRecentTools() {
+            recentTools.innerHTML = '';
+            
+            // 按最后修改时间排序
+            const sortedTools = [...toolsData].sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
+            
+            // 显示前5个
+            sortedTools.slice(0, 5).forEach(tool => {
+                const row = document.createElement('tr');
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(tool.status) {
+                    case 'normal':
+                        statusClass = 'status-normal';
+                        statusText = '正常';
+                        break;
+                    case 'development':
+                        statusClass = 'status-development';
+                        statusText = '开发中';
+                        break;
+                    case 'maintenance':
+                        statusClass = 'status-maintenance';
+                        statusText = '修复中';
+                        break;
+                }
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="tool-info">
+                            <div class="tool-icon" style="background-color: var(--primary-color);">
+                                <i class="fas fa-${tool.icon}"></i>
+                            </div>
+                            <div class="tool-details">
+                                <div class="tool-name">${tool.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="status-badge ${statusClass}">${statusText}</div>
+                    </td>
+                    <td>
+                        <div class="tool-date">${tool.lastModified}</div>
+                    </td>
+                `;
+                
+                recentTools.appendChild(row);
+            });
+        }
+        
+        // 更新统计数据
+        function updateStats() {
+            const counts = {
+                normal: 0,
+                development: 0,
+                maintenance: 0
+            };
+            
+            toolsData.forEach(tool => {
+                counts[tool.status]++;
+            });
+            
+            totalToolsCount.textContent = toolsData.length;
+            normalCount.textContent = counts.normal;
+            developmentCount.textContent = counts.development;
+            maintenanceCount.textContent = counts.maintenance;
+        }
+
+        // --- 系统设置 ---
+        function loadSystemSettings() {
+            const siteTitle = localStorage.getItem('dreamirage_site_title');
+            const siteSubtitle = localStorage.getItem('dreamirage_site_subtitle');
+
+            if(siteTitle) document.getElementById('site-title').value = siteTitle;
+            if(siteSubtitle) document.getElementById('site-subtitle').value = siteSubtitle;
+        }
+
+        saveSystemSettingsBtn.addEventListener('click', function() {
+            // 保存网站信息
+            const siteTitle = document.getElementById('site-title').value;
+            const siteSubtitle = document.getElementById('site-subtitle').value;
+            localStorage.setItem('dreamirage_site_title', siteTitle);
+            localStorage.setItem('dreamirage_site_subtitle', siteSubtitle);
+
+            // 保存密码
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (currentPassword || newPassword || confirmPassword) {
+                changePassword(currentPassword, newPassword, confirmPassword);
+            } else {
+                showToast('常规设置已保存！');
+            }
+        });
+
+        function changePassword(current, newPass, confirm) {
+            const storedPass = localStorage.getItem('dreamirage_admin_password_override') || 'houtaidemimashizhege1134';
+            if (current !== storedPass) {
+                alert('当前密码不正确！');
+                return;
+            }
+            if (!newPass || newPass.length < 6) {
+                alert('新密码不能为空或小于6个字符！');
+                return;
+            }
+            if (newPass !== confirm) {
+                alert('两次输入的新密码不匹配！');
+                return;
+            }
+
+            localStorage.setItem('dreamirage_admin_password_override', newPass);
+            alert('密码修改成功！');
+            
+            // 清空输入框
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+        }
+
+        // 导出JSON
+        exportJsonBtn.addEventListener('click', function() {
+            const dataStr = JSON.stringify(toolsData, null, 4);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'tools.json';
+            
+            let linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        });
+        
+        // 保存设置
+        saveSettingsBtn.addEventListener('click', function() {
+            // 收集所有工具状态
+            const statusSelects = document.querySelectorAll('.status-select');
+            const maintenanceMessage = document.getElementById('maintenance-message').value;
+            
+            // 更新工具数据
+            statusSelects.forEach(select => {
+                const toolId = parseInt(select.getAttribute('data-tool-id'));
+                const status = select.value;
+                
+                const toolIndex = toolsData.findIndex(tool => tool.id === toolId);
+                if (toolIndex !== -1) {
+                    toolsData[toolIndex].status = status;
+                    toolsData[toolIndex].lastModified = new Date().toISOString().split('T')[0];
+                }
+            });
+            
+            // 保存到本地存储
+            saveToolsStatus();
+            
+            // 更新UI
+            loadRecentTools();
+            updateStats();
+            
+            // 显示保存成功提示
+            showToast('工具状态已保存！');
+        });
+        
+        // 显示提示框
+        function showToast(message = '设置已成功保存！') {
+            toast.querySelector('span').textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 保存工具状态到本地存储
+        function saveToolsStatus() {
+            const statusData = toolsData.map(tool => ({
+                id: tool.id,
+                status: tool.status,
+                lastModified: tool.lastModified
+            }));
+            
+            const maintenanceMessage = document.getElementById('maintenance-message').value;
+            
+            localStorage.setItem('dreamirage_tools_status', JSON.stringify(statusData));
+            localStorage.setItem('dreamirage_maintenance_message', maintenanceMessage);
+        }
+        
+        // 从本地存储加载工具状态
+        function loadToolsStatus() {
+            const savedStatus = localStorage.getItem('dreamirage_tools_status');
+            const savedMessage = localStorage.getItem('dreamirage_maintenance_message');
+            
+            if (savedStatus) {
+                const statusData = JSON.parse(savedStatus);
+                
+                // 更新工具数据
+                statusData.forEach(item => {
+                    const toolIndex = toolsData.findIndex(tool => tool.id === item.id);
+                    if (toolIndex !== -1) {
+                        toolsData[toolIndex].status = item.status;
+                        toolsData[toolIndex].lastModified = item.lastModified;
+                    }
+                });
+                
+                // 刷新UI
+                loadToolsList();
+                loadRecentTools();
+                updateStats();
+            }
+            
+            if (savedMessage) {
+                document.getElementById('maintenance-message').value = savedMessage;
+            }
+        }
+    </script>
+</body>
+</html> 
