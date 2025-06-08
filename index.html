@@ -4,19 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dreamirage Tool - 官方工具箱</title>
-    <meta name="keywords" content="计算器,工具箱,Dreamirage,多功能计算器,在线工具">
-    <meta name="description" content="Dreamirage Tool官方工具箱，提供计算器等多种实用工具">
-    <style>
+    <meta name="keywords" content="计算器,工具箱,Dreamirage,多功能计算器,在线工具,程序员计算器,时间转换,单位换算,免费在线工具,网页工具,实用工具,在线计算,金融工具,Dreamirage Tool">
+    <meta name="description" content="Dreamirage Tool官方工具箱，提供计算器等多种实用工具，助力高效工作与生活">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style> 
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --text-color: #333;
+            --text-light: #666;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 12px 30px rgba(67, 97, 238, 0.15);
+            --transition: all 0.3s ease;
+        }
+        
+        @font-face {
+            font-family: 'MiSans';
+            font-style: normal;
+            font-weight: 400;
+            src: url('fonts/MiSans-Regular.woff2') format('woff2'),
+                 url('fonts/MiSans-Regular.woff') format('woff');
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'MiSans';
+            font-style: normal;
+            font-weight: 500;
+            src: url('fonts/MiSans-Medium.woff2') format('woff2'),
+                 url('fonts/MiSans-Medium.woff') format('woff');
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'MiSans';
+            font-style: normal;
+            font-weight: 700;
+            src: url('fonts/MiSans-Bold.woff2') format('woff2'),
+                 url('fonts/MiSans-Bold.woff') format('woff');
+            font-display: swap;
+        }
+        
         * {
             margin: 0;
             padding: 0; 
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
+            font-family: 'MiSans', 'Arial', sans-serif;
+        } 
         
-        body {
-            background-color: #f5f7fa;
-            color: #333;
+        body { 
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
             display: flex;
             flex-direction: column;
@@ -30,8 +71,8 @@
         }
         
         .container {
-            max-width: 1200px;
-            width: 100%;
+            max-width: 1280px;
+            width: 100%; 
             margin: 0 auto;
             padding: 20px;
             flex: 1;
@@ -293,9 +334,63 @@
             opacity: 1;
             pointer-events: all;
         }
-    </style>
-</head>
-<body>
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .disabled-tool {
+            opacity: 0.7;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .disabled-tool:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .disabled-tool::before {
+            display: block;
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            transform: scaleX(0);
+        }
+        
+        .disabled-tool:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .disabled-tool.maintenance::before {
+            background: linear-gradient(90deg, #ff5252, #ff7878);
+        }
+        
+        .disabled-tool.development::before {
+            background: linear-gradient(90deg, #ffab00, #ffc740);
+        }
+    </style> 
+</head> 
+<body> 
     <div class="page-transition"></div>
     
     <div class="container">
@@ -311,7 +406,7 @@
             <!-- 工具卡片将由JS动态生成 -->
         </div>
     </div>
-    
+         
     <footer class="footer">
         <div class="footer-content">
                     <div class="footer-links">
@@ -324,13 +419,120 @@
         </div>
     </footer>
     
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+ 
     <script> 
-        let toolsData = [];
+        let toolsData = [
+            {
+                id: 1,
+                name: "计算器",
+                description: "多功能计算器，支持基础运算与科学计算",
+                icon: "calculator",
+                path: "tool/calculator.html",
+                status: "normal"
+            },
+            {
+                id: 2,
+                name: "单位换算",
+                description: "支持长度、面积、体积、重量等多种单位转换",
+                icon: "exchange-alt",
+                path: "tool/unit_converter.html",
+                status: "normal"
+            },
+            {
+                id: 3,
+                name: "日期计算器",
+                description: "计算日期差异、添加/减去天数、工作日计算",
+                icon: "calendar-alt",
+                path: "tool/date_calculator.html",
+                status: "normal"
+            },
+            {
+                id: 4,
+                name: "随机数生成器",
+                description: "生成指定范围内的随机数、随机密码等",
+                icon: "random",
+                path: "tool/random_generator.html",
+                status: "normal"
+            },
+            {
+                id: 5,
+                name: "密码生成器",
+                description: "创建安全、强健的随机密码",
+                icon: "key",
+                path: "tool/password_generator.html",
+                status: "normal"
+            },
+            {
+                id: 6,
+                name: "图片压缩工具",
+                description: "压缩图片文件大小，保持合理的图像质量",
+                icon: "image",
+                path: "tool/image_compressor.html",
+                status: "normal"
+            },
+            {
+                id: 7,
+                name: "文本大小写转换",
+                description: "快速转换文本大小写格式",
+                icon: "font",
+                path: "tool/text_case_converter.html",
+                status: "normal"
+            },
+            {
+                id: 8,
+                name: "二维码生成器",
+                description: "生成可自定义的二维码图片",
+                icon: "qrcode",
+                path: "tool/qrcode_generator.html",
+                status: "normal"
+            },
+            {
+                id: 9,
+                name: "JSON格式化工具",
+                description: "格式化和验证JSON数据",
+                icon: "code",
+                path: "tool/json_formatter.html",
+                status: "normal"
+            },
+            {
+                id: 10,
+                name: "颜色选择器",
+                description: "直观选择和获取颜色代码",
+                icon: "palette",
+                path: "tool/color_picker.html",
+                status: "normal"
+            },
+            {
+                id: 11,
+                name: "时间戳转换器",
+                description: "在时间戳和可读日期时间之间转换",
+                icon: "clock",
+                path: "tool/timestamp_converter.html",
+                status: "normal"
+            },
+            {
+                id: 13,
+                name: "PDF工具",
+                description: "PDF文件处理工具集",
+                icon: "file-pdf",
+                path: "tool/pdf_tools.html",
+                status: "normal"
+            }
+        ];
+
+        // 添加管理员模式开关
+        let isAdminMode = false;
 
         // 页面加载效果
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             // 加载工具数据并生成列表
-            await loadToolsAndRender();
+            initializeTools();
+            
+            // 初始化管理员功能
+            initAdminFeatures();
 
             setTimeout(() => {
                 document.body.classList.add('loaded');
@@ -355,32 +557,349 @@
             });
         });
 
-        // 加载并渲染工具
-        async function loadToolsAndRender() {
-            try {
-                const response = await fetch('data/tools.json?v=' + new Date().getTime());
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+        // 初始化管理员功能
+        function initAdminFeatures() {
+            // 添加Alt+A+1快捷键进入管理员登录界面
+            document.addEventListener('keydown', function(e) {
+                if (e.altKey && e.key === 'a') {
+                    // 等待下一个按键
+                    const keyListener = function(e2) {
+                        if (e2.key === '1') {
+                            window.location.href = 'admin/index.html';
+                        }
+                        document.removeEventListener('keydown', keyListener);
+                    };
+                    document.addEventListener('keydown', keyListener);
                 }
-                toolsData = await response.json();
+            });
+        }
+        
+        // 切换管理员模式
+        function toggleAdminMode() {
+            // 先验证管理员密码
+            if (!isAdminMode) {
+                const password = prompt('请输入管理员密码:');
+                // 这里简单设置密码为admin123，实际应用中应该使用更安全的验证方式
+                if (password !== 'admin123') {
+                    alert('密码错误！');
+                    return;
+                }
+            }
+            
+            isAdminMode = !isAdminMode;
+            
+            // 更新UI以反映管理员模式
+            if (isAdminMode) {
+                // 添加管理员模式样式
+                const adminStyle = document.createElement('style');
+                adminStyle.id = 'admin-style';
+                adminStyle.textContent = `
+                    .admin-controls {
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                        display: flex;
+                        gap: 5px;
+                    }
+                    .admin-btn {
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        color: white;
+                        font-size: 12px;
+                    }
+                    .edit-btn {
+                        background-color: #4caf50;
+                    }
+                    .status-btn {
+                        background-color: #ff9800;
+                    }
+                    .admin-header {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        background-color: #333;
+                        color: white;
+                        padding: 10px 20px;
+                        z-index: 1000;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    body.admin-mode {
+                        padding-top: 50px;
+                    }
+                `;
+                document.head.appendChild(adminStyle);
                 
-                // 从localStorage加载状态并合并
+                // 添加管理员头部
+                const adminHeader = document.createElement('div');
+                adminHeader.className = 'admin-header';
+                adminHeader.innerHTML = `
+                    <div>管理员模式 <span style="color: #4caf50;">已启用</span></div>
+                    <div>
+                        <button id="add-tool-btn" style="margin-right: 10px; padding: 5px 10px; background-color: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer;">添加工具</button>
+                        <button id="exit-admin-btn" style="padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">退出管理模式</button>
+                    </div>
+                `;
+                document.body.insertBefore(adminHeader, document.body.firstChild);
+                document.body.classList.add('admin-mode');
+                
+                // 退出管理模式按钮事件
+                document.getElementById('exit-admin-btn').addEventListener('click', toggleAdminMode);
+                
+                // 添加工具按钮事件
+                document.getElementById('add-tool-btn').addEventListener('click', showAddToolForm);
+                
+                // 为每个工具卡片添加管理员控件
+                addAdminControlsToCards();
+            } else {
+                // 移除管理员模式样式和元素
+                const adminStyle = document.getElementById('admin-style');
+                if (adminStyle) adminStyle.remove();
+                
+                const adminHeader = document.querySelector('.admin-header');
+                if (adminHeader) adminHeader.remove();
+                
+                document.body.classList.remove('admin-mode');
+                
+                // 移除所有管理员控件
+                document.querySelectorAll('.admin-controls').forEach(control => control.remove());
+                
+                // 保存工具状态到localStorage
+                saveToolsStatus();
+            }
+        }
+        
+        // 为所有工具卡片添加管理员控件
+        function addAdminControlsToCards() {
+            document.querySelectorAll('.tool-card').forEach(card => {
+                const toolId = parseInt(card.getAttribute('data-tool-id'));
+                
+                // 创建管理员控件容器
+                const adminControls = document.createElement('div');
+                adminControls.className = 'admin-controls';
+                
+                // 编辑按钮
+                const editBtn = document.createElement('div');
+                editBtn.className = 'admin-btn edit-btn';
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                editBtn.title = '编辑工具信息';
+                editBtn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    editTool(toolId);
+                });
+                
+                // 状态切换按钮
+                const statusBtn = document.createElement('div');
+                statusBtn.className = 'admin-btn status-btn';
+                statusBtn.innerHTML = '<i class="fas fa-power-off"></i>';
+                statusBtn.title = '切换工具状态';
+                statusBtn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    toggleToolStatus(toolId);
+                });
+                
+                adminControls.append(editBtn, statusBtn);
+                card.appendChild(adminControls);
+            });
+        }
+        
+        // 编辑工具信息
+        function editTool(toolId) {
+            const tool = toolsData.find(t => t.id === toolId);
+            if (!tool) return;
+            
+            const newName = prompt('工具名称:', tool.name);
+            if (newName !== null) tool.name = newName;
+            
+            const newDesc = prompt('工具描述:', tool.description);
+            if (newDesc !== null) tool.description = newDesc;
+            
+            const newIcon = prompt('图标名称 (FontAwesome):', tool.icon);
+            if (newIcon !== null) tool.icon = newIcon;
+            
+            const newPath = prompt('工具路径:', tool.path);
+            if (newPath !== null) tool.path = newPath;
+            
+            // 重新渲染工具列表
+            renderTools();
+            
+            // 如果还在管理员模式，重新添加管理员控件
+            if (isAdminMode) {
+                addAdminControlsToCards();
+            }
+            
+            // 保存到localStorage
+            saveToolsStatus();
+        }
+        
+        // 切换工具状态
+        function toggleToolStatus(toolId) {
+            const tool = toolsData.find(t => t.id === toolId);
+            if (!tool) return;
+            
+            // 循环切换状态: normal -> maintenance -> development -> normal
+            switch (tool.status) {
+                case 'normal':
+                    tool.status = 'maintenance';
+                    break;
+                case 'maintenance':
+                    tool.status = 'development';
+                    break;
+                default:
+                    tool.status = 'normal';
+            }
+            
+            // 重新渲染工具列表
+            renderTools();
+            
+            // 如果还在管理员模式，重新添加管理员控件
+            if (isAdminMode) {
+                addAdminControlsToCards();
+            }
+            
+            // 保存到localStorage
+            saveToolsStatus();
+        }
+        
+        // 显示添加工具表单
+        function showAddToolForm() {
+            // 创建一个模态框
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+            
+            const form = document.createElement('div');
+            form.style.cssText = 'max-width: 500px; width: 100%; background-color: #fff; border-radius: 10px; padding: 30px; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);';
+            
+            form.innerHTML = `
+                <h3 style="margin-bottom: 20px; font-size: 20px; color: var(--primary-color);">添加新工具</h3>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">工具名称</label>
+                    <input id="new-tool-name" type="text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">工具描述</label>
+                    <input id="new-tool-desc" type="text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">图标名称 (FontAwesome)</label>
+                    <input id="new-tool-icon" type="text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">工具路径</label>
+                    <input id="new-tool-path" type="text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">状态</label>
+                    <select id="new-tool-status" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="normal">正常</option>
+                        <option value="maintenance">修复中</option>
+                        <option value="development">开发中</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button id="cancel-add-tool" style="padding: 8px 15px; background-color: #f5f5f5; border: none; border-radius: 4px; cursor: pointer;">取消</button>
+                    <button id="submit-add-tool" style="padding: 8px 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">添加</button>
+                </div>
+            `;
+            
+            overlay.appendChild(form);
+            document.body.appendChild(overlay);
+            
+            // 取消按钮事件
+            document.getElementById('cancel-add-tool').addEventListener('click', () => {
+                document.body.removeChild(overlay);
+            });
+            
+            // 提交按钮事件
+            document.getElementById('submit-add-tool').addEventListener('click', () => {
+                const name = document.getElementById('new-tool-name').value.trim();
+                const desc = document.getElementById('new-tool-desc').value.trim();
+                const icon = document.getElementById('new-tool-icon').value.trim();
+                const path = document.getElementById('new-tool-path').value.trim();
+                const status = document.getElementById('new-tool-status').value;
+                
+                if (!name || !desc || !icon || !path) {
+                    alert('请填写所有字段！');
+                    return;
+                }
+                
+                // 生成新的ID (最大ID + 1)
+                const newId = Math.max(...toolsData.map(t => t.id)) + 1;
+                
+                // 添加新工具
+                toolsData.push({
+                    id: newId,
+                    name: name,
+                    description: desc,
+                    icon: icon,
+                    path: path,
+                    status: status
+                });
+                
+                // 重新渲染工具列表
+                renderTools();
+                
+                // 如果还在管理员模式，重新添加管理员控件
+                if (isAdminMode) {
+                    addAdminControlsToCards();
+                }
+                
+                // 保存到localStorage
+                saveToolsStatus();
+                
+                // 关闭模态框
+                document.body.removeChild(overlay);
+            });
+        }
+        
+        // 保存工具状态到localStorage
+        function saveToolsStatus() {
+            const statusData = toolsData.map(tool => ({
+                id: tool.id,
+                status: tool.status
+            }));
+            localStorage.setItem('dreamirage_tools_status', JSON.stringify(statusData));
+            
+            // 额外保存完整工具数据（方便恢复）
+            localStorage.setItem('dreamirage_tools_data', JSON.stringify(toolsData));
+        }
+
+        // 初始化工具数据并渲染
+        function initializeTools() {
+            try {
+                // 尝试从localStorage加载后台管理系统的工具数据
                 const savedStatus = localStorage.getItem('dreamirage_tools_status');
                 if (savedStatus) {
+                    try {
                     const statusData = JSON.parse(savedStatus);
+                        // 更新工具状态
                     statusData.forEach(item => {
                         const tool = toolsData.find(t => t.id === item.id);
                         if (tool) {
                             tool.status = item.status;
+                                // 如果后台提供了最后修改时间，也一并更新
+                                if (item.lastModified) {
+                                    tool.lastModified = item.lastModified;
+                                }
                         }
                     });
+                    } catch (e) {
+                        console.error('解析工具状态数据失败:', e);
+                    }
                 }
 
                 renderTools();
             } catch (error) {
-                console.error('Failed to load and render tools:', error);
+                console.error('初始化工具数据失败:', error);
                 const grid = document.getElementById('tools-grid');
-                if(grid) grid.innerHTML = '<p style="text-align: center; color: var(--text-light);">无法加载工具列表，请稍后重试。</p>';
+                if(grid) grid.innerHTML = '<p style="text-align: center; color: var(--text-light);">初始化工具列表失败，请刷新页面重试。</p>';
             }
         }
 
@@ -391,9 +910,13 @@
             grid.innerHTML = '';
 
             toolsData.forEach(tool => {
+                const isDisabled = tool.status !== 'normal';
+                const statusClass = isDisabled ? `disabled-tool ${tool.status}` : '';
+                const statusLabel = tool.status === 'maintenance' ? '修复中' : tool.status === 'development' ? '开发中' : '';
+                
                 const toolCardHTML = `
                     <div class="tool-card-wrapper">
-                        <div class="tool-card" data-href="${tool.path}" data-tool-id="${tool.id}">
+                        <div class="tool-card ${statusClass}" data-href="${tool.path}" data-tool-id="${tool.id}">
                             <div class="tool-content">
                                 <div class="tool-icon-wrapper">
                                     <i class="fas fa-${tool.icon} tool-icon"></i>
@@ -403,13 +926,13 @@
                                     <div class="tool-description">${tool.description}</div>
                                 </div>
                             </div>
+                            ${statusLabel ? `<div class="status-label" style="position: absolute; top: 10px; right: 10px; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 700; color: white; background-color: ${tool.status === 'maintenance' ? '#ff5252' : '#ffab00'};">${statusLabel}</div>` : ''}
                         </div>
                     </div>
                 `;
                 grid.innerHTML += toolCardHTML;
             });
 
-            updateAllToolsUI();
             setupToolLinks();
         }
 
@@ -419,10 +942,11 @@
                 card.addEventListener('click', function(e) {
                     const href = this.getAttribute('data-href');
                     const toolId = parseInt(this.getAttribute('data-tool-id'));
+                    const tool = toolsData.find(t => t.id === toolId);
                     
-                    if (isToolDisabled(toolId)) {
+                    if (tool && tool.status !== 'normal') {
                         e.preventDefault();
-                        showToolStatusMessage(toolId);
+                        showToolStatusMessage(tool);
                         return;
                     }
                     
@@ -444,8 +968,7 @@
         }
         
         // 显示工具状态消息
-        function showToolStatusMessage(toolId) {
-            const tool = toolsData.find(t => t.id === toolId);
+        function showToolStatusMessage(tool) {
             if (!tool) return;
                 
             const status = tool.status;
@@ -480,7 +1003,7 @@
             icon.style.cssText = `font-size: 48px; color: ${status === 'maintenance' ? '#ff5252' : '#ffab00'}; margin-bottom: 20px; display: block;`;
             
             const title = document.createElement('h3');
-            title.textContent = `工具${statusText}`;
+            title.textContent = `${tool.name} - ${statusText}`;
             title.style.cssText = 'font-size: 22px; font-weight: bold; margin-bottom: 15px; color: #333;';
             
             const messageText = document.createElement('p');
@@ -510,35 +1033,6 @@
                     close();
                 }
             });
-        }
-        
-        // 更新所有工具的UI状态
-        function updateAllToolsUI() {
-            toolsData.forEach(tool => {
-                const card = document.querySelector(`.tool-card[data-tool-id='${tool.id}']`);
-                if (card && tool.status !== 'normal') {
-                    updateSingleToolUI(card, tool.status);
-                }
-            });
-        }
-        
-        // 更新单个工具的UI
-        function updateSingleToolUI(card, status) {
-            if (!card) return;
-            
-            card.classList.add('disabled');
-            
-            const existingLabel = card.querySelector('.status-label');
-            if(existingLabel) existingLabel.remove();
-
-            const statusLabel = document.createElement('div');
-            statusLabel.className = 'status-label';
-            statusLabel.textContent = status === 'maintenance' ? '修复中' : '开发中';
-            statusLabel.style.cssText = `position: absolute; top: 10px; right: 10px; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 700; color: white; background-color: ${status === 'maintenance' ? '#ff5252' : '#ffab00'};`;
-            
-            card.style.position = 'relative';
-            card.style.opacity = '0.7';
-            card.appendChild(statusLabel);
         }
     </script>
 </body>

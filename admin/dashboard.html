@@ -4,9 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dreamirage Tool - 后台管理系统</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        /* 预加载字体，避免使用Google Fonts */
+        @font-face {
+            font-family: 'MiSans';
+            font-style: normal;
+            font-weight: 400;
+            src: url('../fonts/MiSans-Regular.woff2') format('woff2'),
+                 url('../fonts/MiSans-Regular.woff') format('woff');
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'MiSans';
+            font-style: normal;
+            font-weight: 500;
+            src: url('../fonts/MiSans-Medium.woff2') format('woff2'),
+                 url('../fonts/MiSans-Medium.woff') format('woff');
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'MiSans';
+            font-style: normal;
+            font-weight: 700;
+            src: url('../fonts/MiSans-Bold.woff2') format('woff2'),
+                 url('../fonts/MiSans-Bold.woff') format('woff');
+            font-display: swap;
+        }
         
         :root {
             --primary-color: #6c63ff;
@@ -28,7 +54,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Nunito', 'Arial', sans-serif;
+            font-family: 'MiSans', 'Arial', sans-serif;
         }
         
         body {
@@ -204,11 +230,6 @@
             align-items: center;
             padding: 20px 0;
             margin-bottom: 30px;
-        }
-        
-        .title-container {
-            display: flex;
-            align-items: center;
         }
         
         .page-title {
@@ -750,17 +771,15 @@
     <!-- 主内容区 -->
     <div class="main-content" id="main-content">
         <div class="header">
-            <div class="title-container">
-                <button class="mobile-toggle" id="mobile-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title">
-                    <div class="page-icon">
-                        <i class="fas fa-tachometer-alt"></i>
-                    </div>
-                    仪表盘
-                </h1>
-            </div>
+            <button class="mobile-toggle" id="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="page-title">
+                <div class="page-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                仪表盘
+            </h1>
             
             <div class="user-profile">
                 <div class="welcome-text">
@@ -887,24 +906,15 @@
                 </div>
                 
                 <div class="tabs">
-                    <div class="tab active" data-settings-tab="general">基本设置</div>
-                    <div class="tab" data-settings-tab="security">安全设置</div>
+                    <div class="tab active" data-settings-tab="security">安全设置</div>
                     <div class="tab" data-settings-tab="backup">备份与恢复</div>
                 </div>
                 
-                <div class="tab-content active" id="general-settings" style="padding: 20px;">
-                    <h3 class="settings-section-title">网站信息</h3>
-                    <div class="form-group">
-                        <label for="site-title" class="form-label">主标题</label>
-                        <input type="text" id="site-title" class="form-input" placeholder="例如：Dreamirage Tool官方工具箱">
-                    </div>
-                    <div class="form-group">
-                        <label for="site-subtitle" class="form-label">副标题</label>
-                        <input type="text" id="site-subtitle" class="form-input" placeholder="例如：一站式在线工具集合...">
-                    </div>
+                <div class="tab-content" id="general-settings" style="padding: 20px;">
+                    <!-- This tab is now empty -->
                 </div>
                 
-                <div class="tab-content" id="security-settings" style="padding: 20px;">
+                <div class="tab-content active" id="security-settings" style="padding: 20px;">
                     <h3 class="settings-section-title">管理员密码</h3>
                     <div class="form-group">
                         <label for="current-password" class="form-label">当前密码</label>
@@ -931,7 +941,20 @@
     
     <script>
         // 工具数据
-        let toolsData = [];
+        const toolsData = [
+            { id: 1, name: "多功能计算器", path: "tool/calculator.html", icon: "calculator", status: "normal", lastModified: "2025-01-01" },
+            { id: 2, name: "单位换算工具", path: "tool/unit_converter.html", icon: "exchange-alt", status: "normal", lastModified: "2025-01-02" },
+            { id: 3, name: "时间戳转换", path: "tool/timestamp_converter.html", icon: "clock", status: "normal", lastModified: "2025-01-03" },
+            { id: 4, name: "颜色选择器", path: "tool/color_picker.html", icon: "palette", status: "normal", lastModified: "2025-01-04" },
+            { id: 5, "name": "JSON格式化工具", path: "tool/json_formatter.html", icon: "code", status: "normal", lastModified: "2025-01-05" },
+            { id: 6, name: "密码生成器", path: "tool/password_generator.html", icon: "key", status: "normal", lastModified: "2025-01-06" },
+            { id: 7, name: "二维码生成器", path: "tool/qrcode_generator.html", icon: "qrcode", status: "normal", lastModified: "2025-01-07" },
+            { id: 8, name: "文本大小写转换", path: "tool/text_case_converter.html", icon: "font", status: "normal", lastModified: "2025-01-08" },
+            { id: 9, name: "图片压缩工具", path: "tool/image_compressor.html", icon: "image", status: "normal", lastModified: "2025-01-09" },
+            { id: 10, name: "PDF工具箱", path: "tool/pdf_tools.html", icon: "file-pdf", status: "normal", lastModified: "2025-01-10" },
+            { id: 11, name: "日期计算器", path: "tool/date_calculator.html", icon: "calendar-alt", status: "normal", lastModified: "2025-01-11" },
+            { id: 12, name: "随机数生成器", path: "tool/random_generator.html", icon: "hashtag", status: "normal", lastModified: "2025-01-12" }
+        ];
         
         // DOM元素
         const sidebar = document.getElementById('sidebar');
@@ -956,12 +979,9 @@
         const exportJsonBtn = document.getElementById('export-json-btn');
         
         // 初始化页面
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             // 检查登录状态
             checkLogin();
-
-            // 从JSON文件加载工具数据
-            await loadToolsData();
             
             // 从localStorage加载工具状态
             loadToolsStatus();
@@ -977,21 +997,11 @@
 
             // 加载系统设置
             loadSystemSettings();
+            
+            // 初始化侧边栏和主内容区状态 - 默认侧边栏收缩，主内容区也收缩
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
         });
-        
-        // 从JSON文件加载工具数据
-        async function loadToolsData() {
-            try {
-                const response = await fetch('../data/tools.json?v=' + new Date().getTime());
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                toolsData = await response.json();
-            } catch (error) {
-                console.error('Failed to load tools data:', error);
-                alert('工具数据加载失败，请检查data/tools.json文件是否存在或格式是否正确。页面将无法正常工作。');
-            }
-        }
         
         // 检查登录状态
         function checkLogin() {
@@ -1005,12 +1015,20 @@
         // 切换侧边栏
         toggleBtn.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('collapsed');
+            
+            // 修正逻辑：当侧边栏收缩（有collapsed类）时，主内容区域也应该收缩（添加collapsed类）
+            if(sidebar.classList.contains('collapsed')) {
+                mainContent.classList.add('collapsed');
+            } else {
+                mainContent.classList.remove('collapsed');
+            }
         });
         
         // 移动端菜单切换
         mobileToggle.addEventListener('click', function() {
             sidebar.classList.add('mobile-visible');
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.add('collapsed');
             overlay.classList.add('show');
         });
         
@@ -1207,20 +1225,10 @@
 
         // --- 系统设置 ---
         function loadSystemSettings() {
-            const siteTitle = localStorage.getItem('dreamirage_site_title');
-            const siteSubtitle = localStorage.getItem('dreamirage_site_subtitle');
-
-            if(siteTitle) document.getElementById('site-title').value = siteTitle;
-            if(siteSubtitle) document.getElementById('site-subtitle').value = siteSubtitle;
+            // No-op for now as general settings are removed
         }
 
         saveSystemSettingsBtn.addEventListener('click', function() {
-            // 保存网站信息
-            const siteTitle = document.getElementById('site-title').value;
-            const siteSubtitle = document.getElementById('site-subtitle').value;
-            localStorage.setItem('dreamirage_site_title', siteTitle);
-            localStorage.setItem('dreamirage_site_subtitle', siteSubtitle);
-
             // 保存密码
             const currentPassword = document.getElementById('current-password').value;
             const newPassword = document.getElementById('new-password').value;
@@ -1229,7 +1237,7 @@
             if (currentPassword || newPassword || confirmPassword) {
                 changePassword(currentPassword, newPassword, confirmPassword);
             } else {
-                showToast('常规设置已保存！');
+                showToast('没有要保存的设置。');
             }
         });
 
@@ -1321,6 +1329,9 @@
             
             localStorage.setItem('dreamirage_tools_status', JSON.stringify(statusData));
             localStorage.setItem('dreamirage_maintenance_message', maintenanceMessage);
+            
+            // 保存完整工具数据供前端页面使用
+            localStorage.setItem('dreamirage_tools_data', JSON.stringify(toolsData));
         }
         
         // 从本地存储加载工具状态
@@ -1352,4 +1363,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
