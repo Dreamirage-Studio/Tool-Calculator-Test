@@ -941,19 +941,19 @@
     
     <script>
         // 工具数据
-        const toolsData = [
-            { id: 1, name: "多功能计算器", path: "tool/calculator.html", icon: "calculator", status: "normal", lastModified: "2025-01-01" },
-            { id: 2, name: "单位换算工具", path: "tool/unit_converter.html", icon: "exchange-alt", status: "normal", lastModified: "2025-01-02" },
-            { id: 3, name: "时间戳转换", path: "tool/timestamp_converter.html", icon: "clock", status: "normal", lastModified: "2025-01-03" },
-            { id: 4, name: "颜色选择器", path: "tool/color_picker.html", icon: "palette", status: "normal", lastModified: "2025-01-04" },
-            { id: 5, "name": "JSON格式化工具", path: "tool/json_formatter.html", icon: "code", status: "normal", lastModified: "2025-01-05" },
-            { id: 6, name: "密码生成器", path: "tool/password_generator.html", icon: "key", status: "normal", lastModified: "2025-01-06" },
-            { id: 7, name: "二维码生成器", path: "tool/qrcode_generator.html", icon: "qrcode", status: "normal", lastModified: "2025-01-07" },
-            { id: 8, name: "文本大小写转换", path: "tool/text_case_converter.html", icon: "font", status: "normal", lastModified: "2025-01-08" },
-            { id: 9, name: "图片压缩工具", path: "tool/image_compressor.html", icon: "image", status: "normal", lastModified: "2025-01-09" },
-            { id: 10, name: "PDF工具箱", path: "tool/pdf_tools.html", icon: "file-pdf", status: "normal", lastModified: "2025-01-10" },
-            { id: 11, name: "日期计算器", path: "tool/date_calculator.html", icon: "calendar-alt", status: "normal", lastModified: "2025-01-11" },
-            { id: 12, name: "随机数生成器", path: "tool/random_generator.html", icon: "hashtag", status: "normal", lastModified: "2025-01-12" }
+        let toolsData = [
+            { id: 1, name: "多功能计算器", path: "tool/calculator.html", icon: "calculator", status: "normal", lastModified: "2025-01-01", description: "多功能计算器，支持基础运算与科学计算" },
+            { id: 2, name: "单位换算工具", path: "tool/unit_converter.html", icon: "exchange-alt", status: "normal", lastModified: "2025-01-02", description: "支持长度、面积、体积、重量等多种单位转换" },
+            { id: 3, name: "时间戳转换", path: "tool/timestamp_converter.html", icon: "clock", status: "normal", lastModified: "2025-01-03", description: "在时间戳和可读日期时间之间转换" },
+            { id: 4, name: "颜色选择器", path: "tool/color_picker.html", icon: "palette", status: "normal", lastModified: "2025-01-04", description: "直观选择和获取颜色代码" },
+            { id: 5, name: "JSON格式化工具", path: "tool/json_formatter.html", icon: "code", status: "normal", lastModified: "2025-01-05", description: "格式化和验证JSON数据" },
+            { id: 6, name: "密码生成器", path: "tool/password_generator.html", icon: "key", status: "normal", lastModified: "2025-01-06", description: "创建安全、强健的随机密码" },
+            { id: 7, name: "二维码生成器", path: "tool/qrcode_generator.html", icon: "qrcode", status: "normal", lastModified: "2025-01-07", description: "生成可自定义的二维码图片" },
+            { id: 8, name: "文本大小写转换", path: "tool/text_case_converter.html", icon: "font", status: "normal", lastModified: "2025-01-08", description: "快速转换文本大小写格式" },
+            { id: 9, name: "图片压缩工具", path: "tool/image_compressor.html", icon: "image", status: "normal", lastModified: "2025-01-09", description: "压缩图片文件大小，保持合理的图像质量" },
+            { id: 10, name: "PDF工具箱", path: "tool/pdf_tools.html", icon: "file-pdf", status: "normal", lastModified: "2025-01-10", description: "PDF文件处理工具集" },
+            { id: 11, name: "日期计算器", path: "tool/date_calculator.html", icon: "calendar-alt", status: "normal", lastModified: "2025-01-11", description: "计算日期差异、添加/减去天数、工作日计算" },
+            { id: 12, name: "随机数生成器", path: "tool/random_generator.html", icon: "hashtag", status: "normal", lastModified: "2025-01-12", description: "生成指定范围内的随机数、随机密码等" }
         ];
         
         // DOM元素
@@ -1131,6 +1131,7 @@
                             </div>
                             <div class="tool-details">
                                 <div class="tool-name">${tool.name}</div>
+                                <div class="tool-path" style="font-size: 12px; color: var(--text-light);">${tool.description || ''}</div>
                             </div>
                         </div>
                     </td>
@@ -1138,7 +1139,7 @@
                         <div class="tool-path">${tool.path}</div>
                     </td>
                     <td>
-                        <select class="status-select" data-tool-id="${tool.id}">
+                        <select class="status-select" data-tool-id="${tool.id}" ${!tool.path || tool.path === 'javascript:void(0);' ? 'disabled' : ''}>
                             <option value="normal" ${tool.status === 'normal' ? 'selected' : ''}>正常</option>
                             <option value="development" ${tool.status === 'development' ? 'selected' : ''}>开发中</option>
                             <option value="maintenance" ${tool.status === 'maintenance' ? 'selected' : ''}>修复中</option>
@@ -1146,10 +1147,23 @@
                     </td>
                     <td>
                         <div class="tool-date">${tool.lastModified}</div>
+                        <div class="tool-actions" style="margin-top: 5px;">
+                            <button class="edit-tool-btn" data-tool-id="${tool.id}" style="padding: 3px 8px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                <i class="fas fa-edit"></i> 编辑
+                            </button>
+                        </div>
                     </td>
                 `;
                 
                 toolsList.appendChild(row);
+            });
+            
+            // 添加编辑工具事件监听
+            document.querySelectorAll('.edit-tool-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const toolId = parseInt(this.getAttribute('data-tool-id'));
+                    showEditToolModal(toolId);
+                });
             });
         }
         
@@ -1338,8 +1352,19 @@
         function loadToolsStatus() {
             const savedStatus = localStorage.getItem('dreamirage_tools_status');
             const savedMessage = localStorage.getItem('dreamirage_maintenance_message');
+            const savedToolsData = localStorage.getItem('dreamirage_tools_data');
             
-            if (savedStatus) {
+            if (savedToolsData) {
+                try {
+                    const parsedData = JSON.parse(savedToolsData);
+                    if (Array.isArray(parsedData) && parsedData.length > 0) {
+                        // 使用完整的工具数据替换默认数据
+                        toolsData = parsedData;
+                    }
+                } catch (e) {
+                    console.error('解析工具数据失败:', e);
+                }
+            } else if (savedStatus) {
                 const statusData = JSON.parse(savedStatus);
                 
                 // 更新工具数据
@@ -1350,16 +1375,293 @@
                         toolsData[toolIndex].lastModified = item.lastModified;
                     }
                 });
-                
-                // 刷新UI
-                loadToolsList();
-                loadRecentTools();
-                updateStats();
             }
             
             if (savedMessage) {
                 document.getElementById('maintenance-message').value = savedMessage;
             }
+            
+            // 刷新UI
+            loadToolsList();
+            loadRecentTools();
+            updateStats();
+        }
+
+        // 添加"添加工具"按钮到工具管理页面
+        document.addEventListener('DOMContentLoaded', function() {
+            const toolsTableHeader = document.querySelector('#tools-content .table-header');
+            
+            if (toolsTableHeader) {
+                const addToolBtn = document.createElement('button');
+                addToolBtn.className = 'save-btn';
+                addToolBtn.id = 'add-tool-btn';
+                addToolBtn.innerHTML = '<i class="fas fa-plus"></i> 添加工具';
+                addToolBtn.style.marginRight = '10px';
+                addToolBtn.style.backgroundColor = 'var(--success-color)';
+                
+                toolsTableHeader.insertBefore(addToolBtn, toolsTableHeader.querySelector('#save-settings-btn'));
+                
+                // 添加工具按钮点击事件
+                document.getElementById('add-tool-btn').addEventListener('click', showAddToolModal);
+            }
+        });
+
+        // 显示添加工具模态框
+        function showAddToolModal() {
+            const modalOverlay = document.createElement('div');
+            modalOverlay.className = 'modal-overlay';
+            modalOverlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;';
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.cssText = 'background-color: var(--card-bg); border-radius: 10px; padding: 30px; width: 90%; max-width: 600px; box-shadow: var(--shadow);';
+            
+            modal.innerHTML = `
+                <h2 style="font-size: 24px; color: var(--primary-color); margin-bottom: 20px;">添加新工具</h2>
+                
+                <div class="form-group">
+                    <label for="tool-name" class="form-label">工具名称</label>
+                    <input type="text" id="tool-name" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="tool-description" class="form-label">工具描述</label>
+                    <input type="text" id="tool-description" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="tool-icon" class="form-label">图标 (FontAwesome)</label>
+                    <input type="text" id="tool-icon" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="tool-path" class="form-label">工具路径</label>
+                    <input type="text" id="tool-path" class="form-input" placeholder="例如: tool/example.html" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    <div class="path-hint" style="margin-top: 5px; font-size: 12px; color: var(--text-light);">
+                        * 如不填写路径，工具将默认设置为"开发中"状态，且无法转为可用状态
+                    </div>
+                </div>
+                
+                <div class="form-actions" style="display: flex; justify-content: flex-end; margin-top: 30px; gap: 10px;">
+                    <button id="cancel-add-tool" class="btn" style="padding: 10px 20px; background-color: #f5f5f5; border: none; border-radius: 6px; cursor: pointer;">取消</button>
+                    <button id="confirm-add-tool" class="btn" style="padding: 10px 20px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer;">添加</button>
+                </div>
+            `;
+            
+            modalOverlay.appendChild(modal);
+            document.body.appendChild(modalOverlay);
+            
+            // 取消按钮事件
+            document.getElementById('cancel-add-tool').addEventListener('click', function() {
+                document.body.removeChild(modalOverlay);
+            });
+            
+            // 确认添加工具事件
+            document.getElementById('confirm-add-tool').addEventListener('click', function() {
+                const name = document.getElementById('tool-name').value.trim();
+                const description = document.getElementById('tool-description').value.trim();
+                const icon = document.getElementById('tool-icon').value.trim();
+                const path = document.getElementById('tool-path').value.trim();
+                
+                if (!name || !description || !icon) {
+                    alert('请填写工具名称、描述和图标');
+                    return;
+                }
+                
+                // 生成新的ID (当前最大ID + 1)
+                const newId = Math.max(...toolsData.map(tool => tool.id)) + 1;
+                
+                // 获取当前日期作为最后修改时间
+                const today = new Date();
+                const formattedDate = today.getFullYear() + '-' + 
+                    String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(today.getDate()).padStart(2, '0');
+                
+                // 创建新工具对象
+                const newTool = {
+                    id: newId,
+                    name: name,
+                    description: description,
+                    icon: icon,
+                    path: path || 'javascript:void(0);', // 如果未设置路径，使用无效链接
+                    status: path ? 'normal' : 'development', // 如果没有路径，设置为开发中状态
+                    lastModified: formattedDate
+                };
+                
+                // 添加到工具数据中
+                toolsData.push(newTool);
+                
+                // 重新加载工具列表
+                loadToolsList();
+                loadRecentTools();
+                
+                // 更新统计数据
+                updateStats();
+                
+                // 保存到localStorage
+                saveToolsStatus();
+                
+                // 关闭模态框
+                document.body.removeChild(modalOverlay);
+                
+                // 显示成功提示
+                showToast('工具添加成功！');
+            });
+        }
+
+        // 显示编辑工具模态框
+        function showEditToolModal(toolId) {
+            const tool = toolsData.find(t => t.id === toolId);
+            if (!tool) return;
+            
+            const modalOverlay = document.createElement('div');
+            modalOverlay.className = 'modal-overlay';
+            modalOverlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;';
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.cssText = 'background-color: var(--card-bg); border-radius: 10px; padding: 30px; width: 90%; max-width: 600px; box-shadow: var(--shadow);';
+            
+            const hasPath = tool.path && tool.path !== 'javascript:void(0);';
+            
+            modal.innerHTML = `
+                <h2 style="font-size: 24px; color: var(--primary-color); margin-bottom: 20px;">编辑工具</h2>
+                
+                <div class="form-group">
+                    <label for="edit-tool-name" class="form-label">工具名称</label>
+                    <input type="text" id="edit-tool-name" class="form-input" value="${tool.name}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-tool-description" class="form-label">工具描述</label>
+                    <input type="text" id="edit-tool-description" class="form-input" value="${tool.description || ''}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-tool-icon" class="form-label">图标 (FontAwesome)</label>
+                    <input type="text" id="edit-tool-icon" class="form-input" value="${tool.icon}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-tool-path" class="form-label">工具路径</label>
+                    <input type="text" id="edit-tool-path" class="form-input" value="${hasPath ? tool.path : ''}" placeholder="例如: tool/example.html" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    <div class="path-hint" style="margin-top: 5px; font-size: 12px; color: var(--text-light);">
+                        * 如不填写路径，工具将默认设置为"开发中"状态，且无法转为可用状态
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-tool-status" class="form-label">工具状态</label>
+                    <select id="edit-tool-status" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;" ${!hasPath ? 'disabled' : ''}>
+                        <option value="normal" ${tool.status === 'normal' ? 'selected' : ''}>正常</option>
+                        <option value="maintenance" ${tool.status === 'maintenance' ? 'selected' : ''}>修复中</option>
+                        <option value="development" ${tool.status === 'development' ? 'selected' : ''}>开发中</option>
+                    </select>
+                    ${!hasPath ? '<div style="margin-top: 5px; font-size: 12px; color: var(--danger-color);">* 无路径的工具必须为开发中状态</div>' : ''}
+                </div>
+                
+                <div class="form-actions" style="display: flex; justify-content: flex-end; margin-top: 30px; gap: 10px;">
+                    <button id="delete-tool" class="btn" style="padding: 10px 20px; background-color: var(--danger-color); color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: auto;">删除</button>
+                    <button id="cancel-edit-tool" class="btn" style="padding: 10px 20px; background-color: #f5f5f5; border: none; border-radius: 6px; cursor: pointer;">取消</button>
+                    <button id="confirm-edit-tool" class="btn" style="padding: 10px 20px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer;">保存</button>
+                </div>
+            `;
+            
+            modalOverlay.appendChild(modal);
+            document.body.appendChild(modalOverlay);
+            
+            // 监听路径输入，动态控制状态选择器
+            document.getElementById('edit-tool-path').addEventListener('input', function() {
+                const pathInput = this.value.trim();
+                const statusSelect = document.getElementById('edit-tool-status');
+                
+                if (!pathInput) {
+                    statusSelect.value = 'development';
+                    statusSelect.disabled = true;
+                } else {
+                    statusSelect.disabled = false;
+                }
+            });
+            
+            // 取消按钮事件
+            document.getElementById('cancel-edit-tool').addEventListener('click', function() {
+                document.body.removeChild(modalOverlay);
+            });
+            
+            // 删除工具事件
+            document.getElementById('delete-tool').addEventListener('click', function() {
+                if (confirm(`确定要删除工具 "${tool.name}" 吗？`)) {
+                    // 找到工具索引
+                    const index = toolsData.findIndex(t => t.id === toolId);
+                    if (index !== -1) {
+                        // 从数组中移除
+                        toolsData.splice(index, 1);
+                        
+                        // 重新加载工具列表
+                        loadToolsList();
+                        loadRecentTools();
+                        
+                        // 更新统计数据
+                        updateStats();
+                        
+                        // 保存到localStorage
+                        saveToolsStatus();
+                        
+                        // 关闭模态框
+                        document.body.removeChild(modalOverlay);
+                        
+                        // 显示成功提示
+                        showToast('工具已成功删除！');
+                    }
+                }
+            });
+            
+            // 确认编辑工具事件
+            document.getElementById('confirm-edit-tool').addEventListener('click', function() {
+                const name = document.getElementById('edit-tool-name').value.trim();
+                const description = document.getElementById('edit-tool-description').value.trim();
+                const icon = document.getElementById('edit-tool-icon').value.trim();
+                const path = document.getElementById('edit-tool-path').value.trim();
+                const status = document.getElementById('edit-tool-status').value;
+                
+                if (!name || !description || !icon) {
+                    alert('请填写工具名称、描述和图标');
+                    return;
+                }
+                
+                // 获取当前日期作为最后修改时间
+                const today = new Date();
+                const formattedDate = today.getFullYear() + '-' + 
+                    String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(today.getDate()).padStart(2, '0');
+                
+                // 更新工具数据
+                const toolIndex = toolsData.findIndex(t => t.id === toolId);
+                if (toolIndex !== -1) {
+                    toolsData[toolIndex].name = name;
+                    toolsData[toolIndex].description = description;
+                    toolsData[toolIndex].icon = icon;
+                    toolsData[toolIndex].path = path || 'javascript:void(0);';
+                    toolsData[toolIndex].status = path ? status : 'development';
+                    toolsData[toolIndex].lastModified = formattedDate;
+                    
+                    // 重新加载工具列表
+                    loadToolsList();
+                    loadRecentTools();
+                    
+                    // 更新统计数据
+                    updateStats();
+                    
+                    // 保存到localStorage
+                    saveToolsStatus();
+                    
+                    // 关闭模态框
+                    document.body.removeChild(modalOverlay);
+                    
+                    // 显示成功提示
+                    showToast('工具编辑成功！');
+                }
+            });
         }
     </script>
 </body>
